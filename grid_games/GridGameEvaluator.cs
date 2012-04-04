@@ -16,14 +16,18 @@ namespace grid_games
         ulong _evaluationCount;
         IAgent[] _agents;
         IList<NeatGenome> _genomeList;
+        GridGameParameters _params;
 
         public bool StopConditionSatisfied { get { return false; } }
 
         public GridGameEvaluator(IGenomeDecoder<TGenome, IBlackBox> genomeDecoder,
-                                Func<IAgent, IAgent, GridGame> createGame)
+                                Func<IAgent, IAgent, GridGame> createGame,
+                                GridGameParameters parameters)
         {
             _genomeDecoder = genomeDecoder;
             _createGame = createGame;
+            _params = parameters;
+            _evaluationCount = 0;
         }
         
         public void Evaluate(IList<TGenome> genomeList)
@@ -40,14 +44,57 @@ namespace grid_games
             //  - Do we step everyone forward 1 move at a time?
             //  - Do we randomize the step order?
             // Play a round-robin game
+            double[] scores = new double[_agents.Length];
             for(int heroIdx = 0; heroIdx < _agents.Length; heroIdx++)
                 for (int villainIdx = 0; villainIdx < _agents.Length; villainIdx++)
                 {
                     if (heroIdx == villainIdx)
                         continue;
 
+                    int winner = evaluate(_agents[heroIdx], _agents[villainIdx]);
 
+                    updateScores(scores, heroIdx, villainIdx, winner);
                 }
+
+            // TODO:
+            //  - Lamarckian evolution would go here
+        }
+
+        private void updateScores(double[] scores, int heroIdx, int villainIdx, int winner)
+        {
+            if (winner == 1)
+            {
+                observeWinner(heroIdx);
+                scores[heroIdx] += _params.WinReward;
+                scores[villainIdx] += _params.LossReward;
+            }
+            else if (winner == -1)
+            {
+                observeWinner(villainIdx);
+                scores[heroIdx] += _params.LossReward;
+                scores[villainIdx] += _params.WinReward;
+            }
+            else
+            {
+                scores[heroIdx] += _params.TieReward;
+                scores[villainIdx] += _params.TieReward;
+            }
+        }
+
+        private void observeWinner(int winnerIdx)
+        {
+            // TODO: Social learning goes here
+        }
+
+        private int evaluate(IAgent hero, IAgent villain)
+        {
+            GridGame game = _createGame(hero, villain);
+
+            game.PlayToEnd();
+
+            _evaluationCount++;
+
+            return game.Winner;
         }
 
         private void createAgents(IList<TGenome> genomeList)
