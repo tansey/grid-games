@@ -24,16 +24,21 @@ namespace RandomAgentBenchmark
             {
                 Name = "Random Benchmark",
                 Description = "A baseline experiment to validate that the agents can evolve to beat a random player.",
-                Game = "Reversi",
+                Game = "tictactoe",
                 Evaluator = "Random",
                 Generations = 500,
-                Inputs = 64,
-                Outputs = 64,
+                Inputs = 9,
+                Outputs = 9;
                 WinReward = 2,
                 TieReward = 1,
                 LossReward = 0,
+                Generations = 500,
                 PopulationSize = 100,
-                Species = 10
+                Species = 10,
+                SocialAgents = true,
+                LamarckianEvolution = true,
+                GenerationsPerMemoryIncrement = 10,
+                MaxMemorySize = 3
             };
             using (TextWriter writer = new StreamWriter(EXPERIMENT_DIR + "config.xml"))
             {

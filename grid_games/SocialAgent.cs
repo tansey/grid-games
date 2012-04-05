@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using SharpNeat.Phenomes;
+using SharpNeat.Phenomes.NeuralNets;
 
 namespace grid_games
 {
@@ -39,6 +40,10 @@ namespace grid_games
             Memory = new LinkedList<StateActionReward>();
             LearningRate = DEFAULT_LEARNING_RATE;
             Momentum = DEFAULT_MOMENTUM_RATE;
+
+            var network = (FastCyclicNetwork)brain;
+            network.BackpropLearningRate = LearningRate;
+            network.Momentum = Momentum;
         }
 
         public override Move GetMove(int[,] board, bool[,] validNextMoves)
@@ -56,6 +61,13 @@ namespace grid_games
             Memory.AddLast(new StateActionReward(inputs, outputs, 0));
 
             return move;
+        }
+
+        public void LearnFromObservation(LinkedList<StateActionReward> observation)
+        {
+            var network = (FastCyclicNetwork)Brain;
+            foreach (var step in observation)
+                network.Train(step.State, step.Action);
         }
     }
 }

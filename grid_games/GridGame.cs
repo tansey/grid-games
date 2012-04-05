@@ -51,7 +51,7 @@ namespace grid_games
                 if (!HasValidMove())
                 {
                     ActingPlayer *= -1;
-                    if (AgentPassed != null)
+                    if(AgentPassed != null)
                         AgentPassed(this, ActingPlayer);
                     continue;
                 }

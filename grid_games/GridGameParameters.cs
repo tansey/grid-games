@@ -24,6 +24,10 @@ namespace grid_games
         public int Species { get; set; }
         public int Generations { get; set; }
         public string Evaluator { get; set; }
+        public int GenerationsPerMemoryIncrement { get; set; }
+        public int MaxMemorySize { get; set; }
+        public bool SocialAgents { get; set; }
+        public bool LamarckianEvolution { get; set; }
 
         /// <summary>
         /// Returns a function that creates a new grid game.
