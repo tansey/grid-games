@@ -49,7 +49,9 @@ namespace grid_games
 
             _generation++;
 
-            if (_params.SocialAgents && _generation % _params.GenerationsPerMemoryIncrement == 0)
+            if (_params.SocialAgents 
+                && _generation % _params.GenerationsPerMemoryIncrement == 0
+                && CurrentMemorySize < _params.MaxMemorySize)
                 CurrentMemorySize++;
         }
 

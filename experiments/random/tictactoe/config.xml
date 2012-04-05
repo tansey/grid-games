@@ -13,6 +13,7 @@
   <Generations>500</Generations>
   <Evaluator>Random</Evaluator>
   <GenerationsPerMemoryIncrement>10</GenerationsPerMemoryIncrement>
+  <MaxMemorySize>3</MaxMemorySize>
   <SocialAgents>true</SocialAgents>
   <LamarckianEvolution>true</LamarckianEvolution>
 </GridGameParameters>
