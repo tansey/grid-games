@@ -50,12 +50,13 @@ namespace grid_games.Reversi
 				
 				// make sure we haven't gone off the board
 				valid_space = (iidx >= 0 && iidx < 8 && jidx >= 0 && jidx < 8);
-				
+				opponent_found = Board[iidx, jidx] == ActingPlayer * -1;
 				// did we find an opponent's piece? flip it!
-				if (valid_space && Board[iidx, jidx] == ActingPlayer * -1){
-					opponent_found = true;
+				if (valid_space && opponent_found){
 					Board[iidx, jidx] = ActingPlayer;
 				}
+				else
+					opponent_found = false;
 					
 				// we keep going as long as they have pieces
 			} while (valid_space && opponent_found);										
@@ -66,6 +67,7 @@ namespace grid_games.Reversi
 													
 			// first we look for opponents pieces
 			bool opponent_found = false;
+			bool opponent_ever_found = false;
 			bool valid_space = true;
 			int iidx = i;
 			int jidx = j;
@@ -77,17 +79,18 @@ namespace grid_games.Reversi
 				
 				// make sure we haven't gone off the board
 				valid_space = (iidx >= 0 && iidx < 8 && jidx >= 0 && jidx < 8);
-				
-				// did we find an opponent's piece? hooray!
-				if (valid_space && Board[iidx, jidx] == ActingPlayer * -1)
+				if (valid_space)
+					opponent_found = Board[iidx, jidx] == ActingPlayer * -1;	
+				else
 					opponent_found = true;
-					
+				if (opponent_found)
+					opponent_ever_found = true;
 				// we keep going as long as they have pieces
 			} while (valid_space && opponent_found);
 								
 			// ok, if there are no more of their guys, we look for one of ours.
 			// if we find one, then we can put our piece on the original square
-			if (opponent_found)
+			if (opponent_ever_found)
 				if (valid_space && Board[iidx, jidx] == ActingPlayer)
 					return true;
 			
