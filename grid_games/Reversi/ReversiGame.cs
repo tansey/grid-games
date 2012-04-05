@@ -35,6 +35,7 @@ namespace grid_games.Reversi
 			int iidx = i;
 			int jidx = j;
 			bool opponent_found = false;
+			bool valid_space = true;
 			
 			do{
 				// move in the right direction	
@@ -42,7 +43,7 @@ namespace grid_games.Reversi
 				jidx += l;
 				
 				// make sure we haven't gone off the board
-				bool valid_space = (iidx >= 0 && iidx < 8 && jidx >= 0 && jidx < 8);
+				valid_space = (iidx >= 0 && iidx < 8 && jidx >= 0 && jidx < 8);
 				
 				// did we find an opponent's piece? flip it!
 				if (valid_space && Board[iidx, jidx] == ActingPlayer * -1){
@@ -59,6 +60,7 @@ namespace grid_games.Reversi
 													
 			// first we look for opponents pieces
 			bool opponent_found = false;
+			bool valid_space = true;
 			int iidx = i;
 			int jidx = j;
 			
@@ -68,7 +70,7 @@ namespace grid_games.Reversi
 				jidx += l;
 				
 				// make sure we haven't gone off the board
-				bool valid_space = (iidx >= 0 && iidx < 8 && jidx >= 0 && jidx < 8);
+				valid_space = (iidx >= 0 && iidx < 8 && jidx >= 0 && jidx < 8);
 				
 				// did we find an opponent's piece? hooray!
 				if (valid_space && Board[iidx, jidx] == ActingPlayer * -1)
@@ -94,9 +96,9 @@ namespace grid_games.Reversi
 			if (! noValidMoves())
 				return;
 			else {
-				ActingPlayer *= -1;
+				ActingPlayer = ActingPlayer *  -1;
 				if (! noValidMoves()){
-					ActingPlayer *= -1;
+					ActingPlayer = ActingPlayer *  -1;
 					return;
 				}
 				else {
@@ -114,7 +116,7 @@ namespace grid_games.Reversi
 			
 			for (int i = 0; i < 8; i++)
                 for (int j = 0; j < 8; j++)
-					sum += Board[i][j];
+					sum += Board[i,j];
 			
 			if (sum < 0)
 				Winner = -1;
@@ -128,8 +130,8 @@ namespace grid_games.Reversi
         {
             for (int i = 0; i < 8; i++){
                 for (int j = 0; j < 8; j++){
-					if (Board[i][j] == 0) {
-						ValidNextMoves[i, j] = 0;
+					if (Board[i,j] == 0) {
+						ValidNextMoves[i, j] = false;
 						//Look in all eight dirs for a move
 						// there is only a move if looking in one direction we
 						// see opponent's pieces followed by one of our pieces.
@@ -149,7 +151,7 @@ namespace grid_games.Reversi
 		{    
 			for (int i = 0; i < 8; i++)
 				for (int j = 0; j < 8; j++)
-					if (ValidNextMoves[i, j] == 1)
+					if (ValidNextMoves[i, j] == true)
 						return false;
 			return true;
 		}
