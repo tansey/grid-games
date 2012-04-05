@@ -51,8 +51,7 @@ namespace grid_games
             };
             NeatParameters = new NeatGenomeParameters()
             {
-                ActivationFn = PlainSigmoid.__DefaultInstance,
-                InitialInterconnectionsProportion = 1
+                ActivationFn = PlainSigmoid.__DefaultInstance
             };
         }
 
