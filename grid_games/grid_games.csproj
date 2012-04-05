@@ -65,6 +65,9 @@
     <Compile Include="SocialAgent.cs" />
     <Compile Include="StateActionReward.cs" />
     <Compile Include="TicTacToe\TicTacToeGame.cs" />
+    <Compile Include="PerfectTTTAgent.cs" />
+    <Compile Include="ValuedMove.cs" />
+    <Compile Include="ScoredMove.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
