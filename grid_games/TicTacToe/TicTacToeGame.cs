@@ -110,6 +110,19 @@ namespace grid_games.TicTacToe
 
             // if the game is not over, set the valid next moves
             setValidNextMoves();
+			
+			//if there are no valid new moves and no one won, it's a draw!
+			bool empty = false;
+            for (int i = 0; i < 6; i++)
+                for (int j = 0; j < 7; j++)
+                    if (Board[i,j] == 0)
+						empty = true;
+			if (empty) 
+			{
+				GameOver = true;
+				Winner = 0;
+				return;
+			}
         }
 
         void setValidNextMoves()
