@@ -27,17 +27,23 @@ namespace grid_games.Reversi
 
         void flipPieces(GridGame game, int player, Move m)
         {
+			//Console.WriteLine("Flip {0}, {1}", m.Column, m.Row);
             int i = m.Row;
 			int j = m.Column;
+			Board[m.Column, m.Row] = ActingPlayer;
 			for (int k = -1; k < 2; k++)
 				for (int l = -1; l < 2; l++)
 					if (validDirection(i,j,k,l))
+				{
+					//Console.WriteLine("{0}, {1}", m.Column, m.Row);
 						flipTokens(i,j,k,l);
+				}
         }
 		
 		
 		//prerequisite: this is a valid direction
 		void flipTokens(int i, int j, int k, int l){
+			//Console.WriteLine("{0}, {1}", i, j);
 			int iidx = i;
 			int jidx = j;
 			bool opponent_found = false;
@@ -50,9 +56,12 @@ namespace grid_games.Reversi
 				
 				// make sure we haven't gone off the board
 				valid_space = (iidx >= 0 && iidx < 8 && jidx >= 0 && jidx < 8);
-				opponent_found = Board[iidx, jidx] == ActingPlayer * -1;
+				if (valid_space)
+					opponent_found = Board[iidx, jidx] == ActingPlayer * -1;
+				else
+					opponent_found = false;
 				// did we find an opponent's piece? flip it!
-				if (valid_space && opponent_found){
+				if (opponent_found){
 					Board[iidx, jidx] = ActingPlayer;
 				}
 				else
@@ -82,7 +91,7 @@ namespace grid_games.Reversi
 				if (valid_space)
 					opponent_found = Board[iidx, jidx] == ActingPlayer * -1;	
 				else
-					opponent_found = true;
+					opponent_found = false;
 				if (opponent_found)
 					opponent_ever_found = true;
 				// we keep going as long as they have pieces
@@ -90,9 +99,12 @@ namespace grid_games.Reversi
 								
 			// ok, if there are no more of their guys, we look for one of ours.
 			// if we find one, then we can put our piece on the original square
-			if (opponent_ever_found)
-				if (valid_space && Board[iidx, jidx] == ActingPlayer)
+			if (opponent_ever_found){
+				if (valid_space && Board[iidx, jidx] == ActingPlayer){
+					//Console.WriteLine("{0},{1}",iidx, jidx
 					return true;
+				}
+			}
 			
 			return false;
 		}
@@ -101,21 +113,24 @@ namespace grid_games.Reversi
 
         void checkGameOver(GridGame game, int player, Move m)
         {
+			
+			//Console.Out.WriteLine("Check {0},{1}", m.Row, m.Column);
             setValidNextMoves();
-			if (! noValidMoves())
-				return;
-			else {
+			if (noValidMoves()){
 				ActingPlayer = ActingPlayer *  -1;
-				if (! noValidMoves()){
-					ActingPlayer = ActingPlayer *  -1;
-					return;
+				setValidNextMoves();
+				if (noValidMoves()){
+				calculateWinner();
+				GameOver = true;
+				return;
 				}
 				else {
-					calculateWinner();
-					GameOver = true;
-					return;
-				}
+					ActingPlayer = ActingPlayer *  -1;
+					setValidNextMoves();
+				}	
+
 			}
+
         }
 		
 		void calculateWinner(){
@@ -137,23 +152,32 @@ namespace grid_games.Reversi
 		
 		void setValidNextMoves()
         {
-            
+            //Console.Out.WriteLine();
             for (int i = 0; i < 8; i++){
+				//Console.Out.WriteLine();
                 for (int j = 0; j < 8; j++){
+					//Console.Out.Write("{0}\t", Board[i,j]);
+					
+					ValidNextMoves[i, j] = false;
 					if (Board[i,j] == 0) {
-						ValidNextMoves[i, j] = false;
 						//Look in all eight dirs for a move
 						// there is only a move if looking in one direction we
 						// see opponent's pieces followed by one of our pieces.
 						for (int k = -1; k < 2; k++){
 							for (int l = -1; l < 2; l++){
 								if (validDirection(i,j,k,l))
+								{
+									//Console.WriteLine("{0}, {1}", i, j);
 									ValidNextMoves[i, j] = true;
+								}
 							}
 						}
 					}
 				}
 			}
+			//Console.WriteLine("{0}, {1}", 0,1);
+			//Console.WriteLine("{0}", ValidNextMoves);
+			//Console.Out.WriteLine();
 		}
 
         public override void Reset()

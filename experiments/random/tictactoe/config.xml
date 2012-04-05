@@ -7,8 +7,8 @@
   <LossReward>0</LossReward>
   <TieReward>1</TieReward>
   <PopulationSize>100</PopulationSize>
-  <Inputs>42</Inputs>
-  <Outputs>42</Outputs>
+  <Inputs>64</Inputs>
+  <Outputs>64</Outputs>
   <Species>10</Species>
   <Generations>500</Generations>
   <Evaluator>Random</Evaluator>
