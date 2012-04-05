@@ -112,12 +112,7 @@ namespace grid_games.TicTacToe
             setValidNextMoves();
 			
 			//if there are no valid new moves and no one won, it's a draw!
-			bool empty = false;
-            for (int i = 0; i < 6; i++)
-                for (int j = 0; j < 7; j++)
-                    if (Board[i,j] == 0)
-						empty = true;
-			if (empty) 
+			if (!HasEmptyCell()) 
 			{
 				GameOver = true;
 				Winner = 0;
@@ -132,5 +127,17 @@ namespace grid_games.TicTacToe
                 for (int j = 0; j < 3; j++)
                     ValidNextMoves[i, j] = Board[i, j] == 0;
         }
+
+        public override void Reset()
+        {
+            base.Reset();
+
+            // Any empty square is a valid move
+            for (int i = 0; i < 3; i++)
+                for (int j = 0; j < 3; j++)
+                    ValidNextMoves[i, j] = true;
+        }
+
+
     }
 }

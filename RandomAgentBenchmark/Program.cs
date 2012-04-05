@@ -7,18 +7,40 @@ using SharpNeat.EvolutionAlgorithms;
 using SharpNeat.Genomes.Neat;
 using System.IO;
 using System.Threading;
+using System.Xml.Serialization;
 
 namespace RandomAgentBenchmark
 {
     class Program
     {
-        const string EXPERIMENT_DIR = "../../../experiments/tictactoe/";
+        const string EXPERIMENT_DIR = "../../../experiments/random/tictactoe/";
         static GridGameExperiment experiment;
         static NeatEvolutionAlgorithm<NeatGenome> ea;
         static bool finished = false;
         
         static void Main(string[] args)
         {
+            GridGameParameters gg = new GridGameParameters()
+            {
+                Name = "Random Benchmark",
+                Description = "A baseline experiment to validate that the agents can evolve to beat a random player.",
+                Game = "Tic-Tac-Toe",
+                Evaluator = "Random",
+                Generations = 500,
+                Inputs = 9,
+                Outputs = 9,
+                WinReward = 2,
+                TieReward = 1,
+                LossReward = 0,
+                PopulationSize = 100,
+                Species = 10
+            };
+            using (TextWriter writer = new StreamWriter(EXPERIMENT_DIR + "config.xml"))
+            {
+                XmlSerializer ser = new XmlSerializer(typeof(GridGameParameters));
+                ser.Serialize(writer, gg);
+            }
+
             experiment = new GridGameExperiment(EXPERIMENT_DIR + "config.xml");
             ea = experiment.CreateEvolutionAlgorithm();
             ea.UpdateScheme = new SharpNeat.Core.UpdateScheme(1);
@@ -46,7 +68,7 @@ namespace RandomAgentBenchmark
             int generation = (int)ea.CurrentGeneration;
 
             // Write the progress to the console.
-            Console.WriteLine("Generation: {1} Best: {2} Avg: {3}",
+            Console.WriteLine("Generation: {0} Best: {1} Avg: {2}",
                                generation, topFitness, averageFitness);
 
             // Append the progress to the results file in CSV format.

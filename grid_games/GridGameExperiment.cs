@@ -143,7 +143,7 @@ namespace grid_games
             // Create genome decoder.
             IGenomeDecoder<NeatGenome, IBlackBox> genomeDecoder = CreateGenomeDecoder();
 
-            switch (Parameters.Evaluator.ToString().Replace(" ", "").Replace("-", ""))
+            switch (Parameters.Evaluator.ToString().ToLower().Replace(" ", "").Replace("-", ""))
             {
                 case "roundrobin": return new GridGameEvaluator<NeatGenome>(genomeDecoder, Parameters);
                 case "randombenchmark":

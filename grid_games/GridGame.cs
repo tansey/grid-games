@@ -72,5 +72,14 @@ namespace grid_games
             Hero.PlayerId = 1;
             Villain.PlayerId = -1;
         }
+
+        public bool HasEmptyCell()
+        {
+            for (int i = 0; i < _rows; i++)
+                for (int j = 0; j < _columns; j++)
+                    if (Board[i, j] == 0)
+                        return true;
+            return false;
+        }
     }
 }

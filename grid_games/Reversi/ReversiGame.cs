@@ -31,6 +31,7 @@ namespace grid_games.Reversi
 		
 		void setValidNextMoves()
         {
+            /*
             for (int i = 0; i < 8; i++){
                 for (int j = 0; j < 8; j++){
 					if (Board[i][j] == 0) 
@@ -48,7 +49,7 @@ namespace grid_games.Reversi
 									if (iidx >= 0 && iidx < 8 && jidx >= 0 && jidx < 8)
 									if (Board[iidx, jidx] == ActingPlayer * -1)
 										opponent_found = true;
-								} while (Board[iidx, jidx] == ActingPlayer * -1)
+								} while (Board[iidx, jidx] == ActingPlayer * -1);
 								
 									
 									// find a blank space
@@ -58,7 +59,7 @@ namespace grid_games.Reversi
 					
 					}
 				}
-			}
+			}*/
                     
         }
     }

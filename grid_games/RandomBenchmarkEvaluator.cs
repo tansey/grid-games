@@ -20,6 +20,7 @@ namespace grid_games
         {
             IAgent randomAgent = new RandomAgent(-1);
             double[] scores = new double[_agents.Length];
+            for(int round = 0 ; round < 50; round++)
             for (int i = 0; i < _agents.Length; i++)
             {
                 int winner = evaluate(_agents[i], randomAgent);

@@ -119,7 +119,7 @@ namespace grid_games
                     _agents[i] = new RandomAgent(i);
                 }
                 else
-                    _agents[i] = new NeuralAgent(i, phenome);
+                    _agents[i] = new SocialAgent(i, phenome);
             }
         }
 
@@ -133,6 +133,7 @@ namespace grid_games
             
         }
 
+        
         
     }
 }

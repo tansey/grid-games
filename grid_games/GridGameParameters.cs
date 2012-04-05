@@ -6,6 +6,7 @@ using SharpNeat.Decoders;
 using grid_games.TicTacToe;
 using grid_games.ConnectFour;
 using grid_games.Reversi;
+using System.Xml.Serialization;
 
 namespace grid_games
 {
@@ -27,6 +28,7 @@ namespace grid_games
         /// <summary>
         /// Returns a function that creates a new grid game.
         /// </summary>
+        [XmlIgnore]
         public Func<IAgent, IAgent, GridGame> GameFunction
         {
             get
