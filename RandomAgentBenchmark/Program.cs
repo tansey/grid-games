@@ -24,9 +24,9 @@ namespace RandomAgentBenchmark
             {
                 Name = "Random Benchmark",
                 Description = "A baseline experiment to validate that the agents can evolve to beat a random player.",
-                Game = "reversi",
-                Inputs = 64,
-                Outputs = 64,
+                Game = "connect4",
+                Inputs = 42,
+                Outputs = 42,
                 Evaluator = "Random",
                 WinReward = 2,
                 TieReward = 1,

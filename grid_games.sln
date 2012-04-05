@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "grid_games", "grid_games\gr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RandomAgentBenchmark", "RandomAgentBenchmark\RandomAgentBenchmark.csproj", "{DD2E9E25-CBAE-4343-B2EB-456BCE6D14EF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AsciiGames", "AsciiGames\AsciiGames.csproj", "{0AA60E7C-6158-4E7F-B34F-51AE65997332}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,11 +37,21 @@ Global
 		{DD2E9E25-CBAE-4343-B2EB-456BCE6D14EF}.Release|Mixed Platforms.Build.0 = Release|x86
 		{DD2E9E25-CBAE-4343-B2EB-456BCE6D14EF}.Release|x86.ActiveCfg = Release|x86
 		{DD2E9E25-CBAE-4343-B2EB-456BCE6D14EF}.Release|x86.Build.0 = Release|x86
-	EndGlobalSection
-	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = RandomAgentBenchmark\RandomAgentBenchmark.csproj
+		{0AA60E7C-6158-4E7F-B34F-51AE65997332}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{0AA60E7C-6158-4E7F-B34F-51AE65997332}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{0AA60E7C-6158-4E7F-B34F-51AE65997332}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{0AA60E7C-6158-4E7F-B34F-51AE65997332}.Debug|x86.ActiveCfg = Debug|x86
+		{0AA60E7C-6158-4E7F-B34F-51AE65997332}.Debug|x86.Build.0 = Debug|x86
+		{0AA60E7C-6158-4E7F-B34F-51AE65997332}.Release|Any CPU.ActiveCfg = Release|x86
+		{0AA60E7C-6158-4E7F-B34F-51AE65997332}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{0AA60E7C-6158-4E7F-B34F-51AE65997332}.Release|Mixed Platforms.Build.0 = Release|x86
+		{0AA60E7C-6158-4E7F-B34F-51AE65997332}.Release|x86.ActiveCfg = Release|x86
+		{0AA60E7C-6158-4E7F-B34F-51AE65997332}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = RandomAgentBenchmark\RandomAgentBenchmark.csproj
 	EndGlobalSection
 EndGlobal
