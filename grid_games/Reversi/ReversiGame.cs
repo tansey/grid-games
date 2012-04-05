@@ -142,9 +142,6 @@ namespace grid_games.Reversi
                 for (int j = 0; j < 8; j++){
 					if (Board[i,j] == 0) {
 						ValidNextMoves[i, j] = false;
-                        if (i == 2 && j == 4) {
-                            Console.Write("here");
-                        }
 						//Look in all eight dirs for a move
 						// there is only a move if looking in one direction we
 						// see opponent's pieces followed by one of our pieces.

@@ -5,6 +5,7 @@ using System.Text;
 using SharpNeat.Core;
 using SharpNeat.Genomes.Neat;
 using SharpNeat.Phenomes;
+using SharpNeat.Phenomes.NeuralNets;
 
 namespace grid_games
 {
@@ -16,6 +17,9 @@ namespace grid_games
         protected IAgent[] _agents;
         protected IList<NeatGenome> _genomeList;
         protected GridGameParameters _params;
+        protected int _generation;
+
+        public int CurrentMemorySize { get; set; }
 
         public bool StopConditionSatisfied { get { return false; } }
 
@@ -25,6 +29,8 @@ namespace grid_games
             _genomeDecoder = genomeDecoder;
             _params = parameters;
             _evaluationCount = 0;
+
+            CurrentMemorySize = 1;
         }
         
         public void Evaluate(IList<TGenome> genomeList)
@@ -38,8 +44,29 @@ namespace grid_games
             // Play the networks against each other
             evaluateAgents();
 
-            // TODO:
-            //  - Lamarckian evolution would go here
+            if(_params.SocialAgents && _params.LamarckianEvolution)
+                PerformLamarckianEvolution(genomeList, a => (FastCyclicNetwork)((SocialAgent)a).Brain);
+
+            _generation++;
+
+            if (_params.SocialAgents && _generation % _params.GenerationsPerMemoryIncrement == 0)
+                CurrentMemorySize++;
+        }
+
+        private void observeWinner(int winnerIdx)
+        {
+            if (!_params.SocialAgents)
+                return;
+
+            var observation = ((SocialAgent)_agents[winnerIdx]).Memory;
+            for (int i = 0; i < _agents.Length; i++)
+            {
+                if (i == winnerIdx)
+                    continue;
+
+                var observer = (SocialAgent)_agents[i];
+                observer.LearnFromObservation(observation);
+            }
         }
 
         protected virtual void evaluateAgents()
@@ -89,10 +116,7 @@ namespace grid_games
             }
         }
 
-        private void observeWinner(int winnerIdx)
-        {
-            // TODO: Social learning goes here
-        }
+        
 
         protected int evaluate(IAgent hero, IAgent villain)
         {
@@ -119,7 +143,7 @@ namespace grid_games
                     _agents[i] = new RandomAgent(i);
                 }
                 else
-                    _agents[i] = new SocialAgent(i, phenome);
+                    _agents[i] = _params.SocialAgents ? new SocialAgent(i, phenome, CurrentMemorySize) : new NeuralAgent(i, phenome);
             }
         }
 
@@ -133,7 +157,29 @@ namespace grid_games
             
         }
 
-        
+        /// <summary>
+        /// Saves all phenotypic progress back to the genomes.
+        /// </summary>
+        private void PerformLamarckianEvolution(IList<TGenome> genomeList, Func<IAgent, FastCyclicNetwork> networkSelector)
+        {
+            for (int i = 0; i < _agents.Length; i++)
+            {
+                var agent = _agents[i];
+
+                // Get the network for this teacher
+                var network = networkSelector(agent);
+
+                // Get the genome for this teacher
+                var genome = (NeatGenome)genomeList[i];
+
+                // Update the genome to match the phenome weights
+                foreach (var conn in network.ConnectionArray)
+                {
+                    var genomeConn = (ConnectionGene)genome.ConnectionList.First(g => g.SourceNodeId == genome.NodeList[conn._srcNeuronIdx].Id && g.TargetNodeId == genome.NodeList[conn._tgtNeuronIdx].Id);
+                    genomeConn.Weight = conn._weight;
+                }
+            }
+        }
         
     }
 }
