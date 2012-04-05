@@ -14,7 +14,7 @@ namespace grid_games
         private int _rows, _columns, _startingPlayer;
 
         public int[,] Board { get; private set; }
-        public int ActingPlayer { get; private set; }
+        public int ActingPlayer { get; protected set; }
         public bool[,] ValidNextMoves { get; private set; }
         public bool GameOver { get; protected set; }
         public int Winner { get; protected set; }
