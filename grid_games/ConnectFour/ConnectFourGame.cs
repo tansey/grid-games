@@ -100,7 +100,7 @@ namespace grid_games.ConnectFour
 						empty = true;
 			
 			
-			if (empty)
+			if (!empty)
 			{
 				GameOver = true;
 				Winner = 0;
