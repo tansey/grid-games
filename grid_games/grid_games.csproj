@@ -53,6 +53,7 @@
     <Compile Include="ConnectFour\ConnectFourGame.cs" />
     <Compile Include="GridGame.cs" />
     <Compile Include="GridGameEvaluator.cs" />
+    <Compile Include="GridGameExperiment.cs" />
     <Compile Include="GridGameParameters.cs" />
     <Compile Include="IAgent.cs" />
     <Compile Include="Move.cs" />

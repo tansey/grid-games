@@ -8,9 +8,9 @@ namespace grid_games
 {
     public class SocialAgent : NeuralAgent
     {
-        public static int DEFAULT_MEMORY_SIZE = 1;
-        private const double DEFAULT_LEARNING_RATE = 0.1;
-        private const double DEFAULT_MOMENTUM_RATE = 0.9;
+        const int DEFAULT_MEMORY_SIZE = 1;
+        const double DEFAULT_LEARNING_RATE = 0.1;
+        const double DEFAULT_MOMENTUM_RATE = 0.9;
 
         /// <summary>
         /// The maximum number of timesteps to remember.
@@ -32,10 +32,10 @@ namespace grid_games
         /// </summary>
         public double Momentum { get; set; }
 
-        public SocialAgent(int id, IBlackBox brain)
+        public SocialAgent(int id, IBlackBox brain, int memorySize = DEFAULT_MEMORY_SIZE)
             : base(id, brain)
         {
-            MemorySize = DEFAULT_MEMORY_SIZE;
+            MemorySize = memorySize;
             Memory = new LinkedList<StateActionReward>();
             LearningRate = DEFAULT_LEARNING_RATE;
             Momentum = DEFAULT_MOMENTUM_RATE;

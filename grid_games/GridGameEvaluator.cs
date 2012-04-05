@@ -12,7 +12,6 @@ namespace grid_games
         where TGenome : NeatGenome, global::SharpNeat.Core.IGenome<TGenome>
     {
         readonly IGenomeDecoder<TGenome, IBlackBox> _genomeDecoder;
-        readonly Func<IAgent, IAgent, GridGame> _createGame;
         ulong _evaluationCount;
         IAgent[] _agents;
         IList<NeatGenome> _genomeList;
@@ -21,11 +20,9 @@ namespace grid_games
         public bool StopConditionSatisfied { get { return false; } }
 
         public GridGameEvaluator(IGenomeDecoder<TGenome, IBlackBox> genomeDecoder,
-                                Func<IAgent, IAgent, GridGame> createGame,
                                 GridGameParameters parameters)
         {
             _genomeDecoder = genomeDecoder;
-            _createGame = createGame;
             _params = parameters;
             _evaluationCount = 0;
         }
@@ -88,7 +85,7 @@ namespace grid_games
 
         private int evaluate(IAgent hero, IAgent villain)
         {
-            GridGame game = _createGame(hero, villain);
+            GridGame game = _params.GameFunction(hero, villain);
 
             game.PlayToEnd();
 
