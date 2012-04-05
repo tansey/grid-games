@@ -116,5 +116,11 @@ namespace grid_games.ConnectFour
                 for (int j = 0; j < 7; j++)
                     ValidNextMoves[i, j] = Board[i, j] == 0 && (j == 0 || Board[i, j-1] != 0);
         }
+
+        public override void Reset()
+        {
+            base.Reset();
+            setValidNextMoves();
+        }
     }
 }

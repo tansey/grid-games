@@ -11,6 +11,12 @@ namespace grid_games.Reversi
             : base(8, 8, hero, villain)
         {
             this.AgentMoved += new AgentMovedHandler(flipPiecesAndCheckGameOver);
+            this.AgentPassed += new AgentPassedHandler(agentPassed);
+        }
+
+        void agentPassed(GridGame game, int player)
+        {
+            setValidNextMoves();
         }
 
         void flipPiecesAndCheckGameOver(GridGame game, int player, Move m)
@@ -146,6 +152,17 @@ namespace grid_games.Reversi
 				}
 			}
 		}
+
+        public override void Reset()
+        {
+            base.Reset();
+
+            Board[3, 3] = 1;
+            Board[3, 4] = -1;
+            Board[4, 3] = -1;
+            Board[4, 4] = 1;
+            setValidNextMoves();
+        }
 			
 			
 		bool noValidMoves()		

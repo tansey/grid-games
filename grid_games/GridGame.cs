@@ -24,6 +24,9 @@ namespace grid_games
 
         public delegate void AgentMovedHandler(GridGame game, int player, Move m);
         public event AgentMovedHandler AgentMoved;
+        public delegate void AgentPassedHandler(GridGame game, int player);
+        public event AgentPassedHandler AgentPassed;
+
 
         public GridGame(int rows, int columns, IAgent hero, IAgent villain, int startingPlayer = 1)
         {
@@ -44,6 +47,14 @@ namespace grid_games
             while (!GameOver)
             {
                 IAgent player = ActingPlayer == HERO_ID ? Hero : Villain;
+
+                if (!HasValidMove())
+                {
+                    ActingPlayer *= -1;
+                    if (AgentPassed != null)
+                        AgentPassed(this, ActingPlayer);
+                    continue;
+                }
 
                 Move m = player.GetMove(Board, ValidNextMoves);
 
@@ -78,6 +89,15 @@ namespace grid_games
             for (int i = 0; i < _rows; i++)
                 for (int j = 0; j < _columns; j++)
                     if (Board[i, j] == 0)
+                        return true;
+            return false;
+        }
+
+        public bool HasValidMove()
+        {
+            for (int i = 0; i < _rows; i++)
+                for (int j = 0; j < _columns; j++)
+                    if (ValidNextMoves[i, j])
                         return true;
             return false;
         }
