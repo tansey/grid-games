@@ -11,11 +11,11 @@ namespace grid_games
     public class GridGameEvaluator<TGenome> : IGenomeListEvaluator<TGenome>
         where TGenome : NeatGenome, global::SharpNeat.Core.IGenome<TGenome>
     {
-        readonly IGenomeDecoder<TGenome, IBlackBox> _genomeDecoder;
-        ulong _evaluationCount;
-        IAgent[] _agents;
-        IList<NeatGenome> _genomeList;
-        GridGameParameters _params;
+        protected readonly IGenomeDecoder<TGenome, IBlackBox> _genomeDecoder;
+        protected ulong _evaluationCount;
+        protected IAgent[] _agents;
+        protected IList<NeatGenome> _genomeList;
+        protected GridGameParameters _params;
 
         public bool StopConditionSatisfied { get { return false; } }
 
@@ -35,14 +35,22 @@ namespace grid_games
             // Convert the genomes to phenomes (agents)
             createAgents(genomeList);
 
+            // Play the networks against each other
+            evaluateAgents();
 
+            // TODO:
+            //  - Lamarckian evolution would go here
+        }
+
+        protected virtual void evaluateAgents()
+        {
             // TODO: 
             //  - Do we play multiple round-robins?
             //  - Do we step everyone forward 1 move at a time?
             //  - Do we randomize the step order?
             // Play a round-robin game
             double[] scores = new double[_agents.Length];
-            for(int heroIdx = 0; heroIdx < _agents.Length; heroIdx++)
+            for (int heroIdx = 0; heroIdx < _agents.Length; heroIdx++)
                 for (int villainIdx = 0; villainIdx < _agents.Length; villainIdx++)
                 {
                     if (heroIdx == villainIdx)
@@ -53,8 +61,11 @@ namespace grid_games
                     updateScores(scores, heroIdx, villainIdx, winner);
                 }
 
-            // TODO:
-            //  - Lamarckian evolution would go here
+            for (int i = 0; i < scores.Length; i++)
+            {
+                _genomeList[i].EvaluationInfo.SetFitness(scores[i]);
+                _genomeList[i].EvaluationInfo.AlternativeFitness = scores[i];
+            }
         }
 
         private void updateScores(double[] scores, int heroIdx, int villainIdx, int winner)
@@ -83,7 +94,7 @@ namespace grid_games
             // TODO: Social learning goes here
         }
 
-        private int evaluate(IAgent hero, IAgent villain)
+        protected int evaluate(IAgent hero, IAgent villain)
         {
             GridGame game = _params.GameFunction(hero, villain);
 

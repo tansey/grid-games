@@ -128,17 +128,31 @@ namespace grid_games
             // Create the evolution algorithm.
             NeatEvolutionAlgorithm<NeatGenome> ea = new NeatEvolutionAlgorithm<NeatGenome>(EvoParameters, speciationStrategy, complexityRegulationStrategy);
 
-            // Create genome decoder.
-            IGenomeDecoder<NeatGenome, IBlackBox> genomeDecoder = CreateGenomeDecoder();
-
             // Create a genome list evaluator. This packages up the genome decoder with the phenome evaluator.
-            Evaluator = new GridGameEvaluator<NeatGenome>(genomeDecoder, Parameters);
+            Evaluator = CreateEvaluator();
 
             // Initialize the evolution algorithm.
             ea.Initialize(Evaluator, genomeFactory, genomeList);
 
             // Finished. Return the evolution algorithm
             return ea;
+        }
+
+        public GridGameEvaluator<NeatGenome> CreateEvaluator()
+        {
+            // Create genome decoder.
+            IGenomeDecoder<NeatGenome, IBlackBox> genomeDecoder = CreateGenomeDecoder();
+
+            switch (Parameters.Evaluator.ToString().Replace(" ", "").Replace("-", ""))
+            {
+                case "roundrobin": return new GridGameEvaluator<NeatGenome>(genomeDecoder, Parameters);
+                case "randombenchmark":
+                case "random": return new RandomBenchmarkEvaluator<NeatGenome>(genomeDecoder, Parameters);
+                default:
+                    break;
+            }
+
+            return null;
         }
 
         /// <summary>

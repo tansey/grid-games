@@ -21,6 +21,8 @@ namespace grid_games
         public int Inputs { get; set; }
         public int Outputs { get; set; }
         public int Species { get; set; }
+        public int Generations { get; set; }
+        public string Evaluator { get; set; }
 
         /// <summary>
         /// Returns a function that creates a new grid game.
