@@ -188,9 +188,10 @@ namespace grid_games
                     case "e":
                         string eval = args[++i];
                         gg.Evaluator = eval;
-                        if (gg.Evaluator != "roundrobin" && gg.Evaluator != "random" && gg.Evaluator != "minimax")
+                        if (gg.Evaluator != "roundrobin" && gg.Evaluator != "random" && gg.Evaluator != "minimax"
+                            && gg.Evaluator != "blondie")
                         {
-                            Console.WriteLine("Invalid evaluator: '{0}'. Options are random, roundrobin, minimax.", eval);
+                            Console.WriteLine("Invalid evaluator: '{0}'. Options are random, roundrobin, minimax, blondie.", eval);
                             return null;
                         }
                         break;
