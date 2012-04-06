@@ -22,7 +22,6 @@ namespace grid_games.ConnectFour
 			return;
         }
 		
-		
         void setValidNextMoves()
         {
 			GetValidNextMoves(Board, ValidNextMoves, ActingPlayer);
@@ -128,12 +127,10 @@ namespace grid_games.ConnectFour
 
         public static double EvaluateBoard(int[,] board, int player)
         {
-            // It's tic-tac-toe. Go to the end of the game tree and stop being lazy.
+            // Um this will be coevolved with magic?
             return 0; 
         }
-
-		
-
+	
         public override void Reset()
         {
             base.Reset();
