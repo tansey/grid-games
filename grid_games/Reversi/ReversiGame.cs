@@ -16,7 +16,7 @@ namespace grid_games.Reversi
 
         void agentPassed(GridGame game, int player)
         {
-			Console.WriteLine("No Valid Moves for player {0}", ActingPlayer);
+			//Console.WriteLine("No Valid Moves for player {0}", ActingPlayer);
             setValidNextMoves();
         }
 

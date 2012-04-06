@@ -2,7 +2,7 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "grid_games", "grid_games\grid_games.csproj", "{6AF9F56C-15AE-4748-9759-663627033FB6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RandomAgentBenchmark", "RandomAgentBenchmark\RandomAgentBenchmark.csproj", "{DD2E9E25-CBAE-4343-B2EB-456BCE6D14EF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AgentBenchmark", "AgentBenchmark\AgentBenchmark.csproj", "{DD2E9E25-CBAE-4343-B2EB-456BCE6D14EF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AsciiGames", "AsciiGames\AsciiGames.csproj", "{0AA60E7C-6158-4E7F-B34F-51AE65997332}"
 EndProject
@@ -51,6 +51,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		        StartupItem = RandomAgentBenchmark\RandomAgentBenchmark.csproj
+		        StartupItem = AgentBenchmark\AgentBenchmark.csproj
 	EndGlobalSection
 EndGlobal

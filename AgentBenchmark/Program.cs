@@ -9,25 +9,42 @@ using System.IO;
 using System.Threading;
 using System.Xml.Serialization;
 
-namespace RandomAgentBenchmark
+namespace AgentBenchmark
 {
     class Program
     {
-        const string EXPERIMENT_DIR = "../../../experiments/random/tictactoe/";
+        static string EXPERIMENT_DIR = "../../../experiments/random/";
+        static string RESULTS_FILE;
+        static string CONFIG_FILE;
         static GridGameExperiment experiment;
         static NeatEvolutionAlgorithm<NeatGenome> ea;
         static bool finished = false;
         
         static void Main(string[] args)
         {
+            if (args.Length != 5)
+            {
+                Console.WriteLine("Usage: AgentBenchmark.exe <game> <inputs> <outputs> <evaluator>");
+                Console.WriteLine("<game>".PadRight(15) + "Name of the game. Valid options: tictactoe, connect4, reversi.");
+                Console.WriteLine("<inputs>".PadRight(15) + "Number of inputs for the neural network (usually # of board spaces).");
+                Console.WriteLine("<outputs>".PadRight(15) + "Number of outputs for the neural network (usually # of board spaces).");
+                Console.WriteLine("<evaluator>".PadRight(15) + "Evaluation function to use. Valid options: random, roundrobin, minimax.");
+                Console.WriteLine("<offset>".PadRight(15) + "File to use when saving the config and results files.");
+                return;
+            }
+
+            EXPERIMENT_DIR += args[0] + "/";
+            RESULTS_FILE = EXPERIMENT_DIR + args[4] + "_results.csv";
+            CONFIG_FILE = EXPERIMENT_DIR + args[4] + "_config.xml";
+
             GridGameParameters gg = new GridGameParameters()
             {
                 Name = "Random Benchmark",
                 Description = "A baseline experiment to validate that the agents can evolve to beat a random player.",
-                Game = "connect4",
-                Inputs = 42,
-                Outputs = 42,
-                Evaluator = "Random",
+                Game = args[0],
+                Inputs = int.Parse(args[1]),
+                Outputs = int.Parse(args[2]),
+                Evaluator = args[4],
                 WinReward = 2,
                 TieReward = 1,
                 LossReward = 0,
@@ -40,16 +57,20 @@ namespace RandomAgentBenchmark
                 GenerationsPerMemoryIncrement = 1,
                 MaxMemorySize = 0
             };
-            using (TextWriter writer = new StreamWriter(EXPERIMENT_DIR + "config.xml"))
+            using (TextWriter writer = new StreamWriter(CONFIG_FILE))
             {
                 XmlSerializer ser = new XmlSerializer(typeof(GridGameParameters));
                 ser.Serialize(writer, gg);
             }
 
-            experiment = new GridGameExperiment(EXPERIMENT_DIR + "config.xml");
+            experiment = new GridGameExperiment(CONFIG_FILE);
             ea = experiment.CreateEvolutionAlgorithm();
             ea.UpdateScheme = new SharpNeat.Core.UpdateScheme(1);
             ea.UpdateEvent += new EventHandler(ea_UpdateEvent);
+
+            using (TextWriter writer = new StreamWriter(RESULTS_FILE))
+                writer.WriteLine("Generation,Best,Average");
+
             ea.StartContinue();
 
             while (!finished) Thread.Sleep(1000);
@@ -77,7 +98,7 @@ namespace RandomAgentBenchmark
                                generation, topFitness, averageFitness);
 
             // Append the progress to the results file in CSV format.
-            using (TextWriter writer = new StreamWriter(EXPERIMENT_DIR + "results.csv", true))
+            using (TextWriter writer = new StreamWriter(RESULTS_FILE, true))
                 writer.WriteLine(generation + "," + averageFitness + "," + topFitness);
 
             // Stop if we've evolved for enough generations

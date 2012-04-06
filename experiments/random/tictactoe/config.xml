@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <GridGameParameters xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <Game>connect4</Game>
+  <Game>reversi</Game>
   <Name>Random Benchmark</Name>
   <Description>A baseline experiment to validate that the agents can evolve to beat a random player.</Description>
   <WinReward>2</WinReward>
   <LossReward>0</LossReward>
   <TieReward>1</TieReward>
   <PopulationSize>100</PopulationSize>
-  <Inputs>42</Inputs>
-  <Outputs>42</Outputs>
+  <Inputs>64</Inputs>
+  <Outputs>64</Outputs>
   <Species>10</Species>
   <Subcultures>10</Subcultures>
   <Generations>500</Generations>
