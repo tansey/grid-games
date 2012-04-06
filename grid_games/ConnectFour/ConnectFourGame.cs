@@ -16,7 +16,20 @@ namespace grid_games.ConnectFour
         void checkGameOver(GridGame game, int player, Move m)
         {
 			var Board = game.Board;
-			
+			int winner;
+			GameOver = CheckGameOver(Board, out winner);
+			Winner = winner;
+			return;
+        }
+		
+        void setValidNextMoves()
+        {
+			GetValidNextMoves(Board, ValidNextMoves, ActingPlayer);
+        }
+		
+		
+		public static bool CheckGameOver(int[,] Board, out int winner)
+        {	
 			// Check horizontal
 			int num_in_a_row = 0;
 			int oldtype = 0;
@@ -29,9 +42,8 @@ namespace grid_games.ConnectFour
 					if (newtype == oldtype && newtype != 0){
 						num_in_a_row += 1;
 						if (num_in_a_row == 4) {
-							GameOver = true;
-							Winner = newtype;
-							return;
+							winner = newtype;
+							return true;
 						}
 					}
 					else {
@@ -49,9 +61,8 @@ namespace grid_games.ConnectFour
 					if (newtype == oldtype && newtype != 0){
 						num_in_a_row += 1;
 						if (num_in_a_row == 4) {
-							GameOver = true;
-							Winner = newtype;
-							return;
+							winner = newtype;
+							return true;
 						}
 					}
 					else {
@@ -69,9 +80,8 @@ namespace grid_games.ConnectFour
 					int t3 = Board[i + 2, j + 2];
 					int t4 = Board[i + 3, j + 3];
 					if (t1 != 0 && t1 == t2 && t2 == t3 && t3 == t4){
-							GameOver = true;
-							Winner = t1;
-							return;
+							winner = t1;
+							return true;
 					}
 				}
 			}
@@ -84,14 +94,12 @@ namespace grid_games.ConnectFour
 					int t3 = Board[i + 2, j - 2];
 					int t4 = Board[i + 3, j - 3];
 					if (t1 != 0 && t1 == t2 && t2 == t3 && t3 == t4){
-							GameOver = true;
-							Winner = t1;
-							return;
+							winner = t1;
+							return true;
 					}
 				}
 			}
 			
-			setValidNextMoves();
 			// Check no more moves
 			bool empty = false;
             for (int i = 0; i < 6; i++)
@@ -102,21 +110,27 @@ namespace grid_games.ConnectFour
 			
 			if (!empty)
 			{
-				GameOver = true;
-				Winner = 0;
-				return;
+				winner = 0;
+				return true;
 			}
+			winner = 0;
+            return false;
         }
-		
-		
-        void setValidNextMoves()
+
+        public static void GetValidNextMoves(int[,] board, bool[,] validNextMoves, int player)
         {
             // Any empty square is a valid move
             for (int i = 0; i < 6; i++)
                 for (int j = 0; j < 7; j++)
-                    ValidNextMoves[i, j] = Board[i, j] == 0 && (j == 0 || Board[i, j-1] != 0);
+                    validNextMoves[i, j] = board[i, j] == 0 && (j == 0 || board[i, j-1] != 0);
         }
 
+        public static double EvaluateBoard(int[,] board, int player)
+        {
+            // Um this will be coevolved with magic?
+            return 0; 
+        }
+	
         public override void Reset()
         {
             base.Reset();
