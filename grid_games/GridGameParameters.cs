@@ -99,12 +99,10 @@ namespace grid_games
                 return null;
             }
 
-            string offset = args[0];
-
             GridGameParameters gg = new GridGameParameters()
             {
-                Name = "random_benchmark",
-                Description = "A baseline experiment to validate that the agents can evolve to beat a random player.",
+                Name = args[0],
+                Description = "",
                 Game = "tictactoe",
                 Inputs = 9,
                 Outputs = 9,
