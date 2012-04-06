@@ -299,8 +299,9 @@ namespace grid_games
                         if (!dir.EndsWith("/"))
                             dir += "/";
                         gg.ExperimentPath = dir;
-                        gg.ConfigPath = gg.ExperimentPath + gg.Name + "_results.csv";
+                        gg.ResultsPath = gg.ExperimentPath + gg.Name + "_results.csv";
                         gg.ConfigPath = gg.ExperimentPath + gg.Name + "_config.xml";
+
                         break;
 
                     case "depth":
