@@ -35,26 +35,42 @@ namespace grid_games
 
         public override Move GetMove(int[,] board, bool[,] validNextMoves)
         {
-			ScoredMove move = MiniMax (board, validNextMoves, _params.MinimaxDepth, PlayerId, "");
+			ScoredMove move = MiniMax (board, validNextMoves, _params.MinimaxDepth, PlayerId);
 			return move.Move;
         }
 		
 		
-		public ScoredMove MiniMax(int[,] board, bool[,] validNextMoves, int depth, int player, string offset){
+		public ScoredMove MiniMax(int[,] board, bool[,] validNextMoves, int depth, int player){
             int win;
             bool over = _checkGameOver(board, out win);
             if (over)
             {
                 if (win == PlayerId)
+                {
+                    board.DrawBoard();
+                    Console.WriteLine("Reward: {0}", _params.WinReward);
                     return new ScoredMove(0, 0, _params.WinReward);
+                }
                 else if (win == 0)
+                {
+                    board.DrawBoard();
+                    Console.WriteLine("Reward: {0}", _params.TieReward);
                     return new ScoredMove(0, 0, _params.TieReward);
+                }
                 else
+                {
+                    board.DrawBoard();
+                    Console.WriteLine("Reward: {0}", _params.LossReward);
                     return new ScoredMove(0, 0, _params.LossReward);
+                }
             }
 
             if (depth == 0)
+            {
+                board.DrawBoard();
+                Console.WriteLine("Reward: {0}", _params.LossReward);
                 return new ScoredMove(0, 0, _boardEval(board, player));
+            }
 
 
 			double alpha = double.MinValue;
@@ -74,7 +90,7 @@ namespace grid_games
                     _validNextMoves(board, validNextMoves, player * -1);
 
                     // Recurse
-					ScoredMove move = MiniMax(board, validNextMoves, depth-1, player * -1, offset + "  ");
+					ScoredMove move = MiniMax(board, validNextMoves, depth-1, player * -1);
 
                     // Undo the move
                     board[i, j] = prev;

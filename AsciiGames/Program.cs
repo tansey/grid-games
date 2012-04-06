@@ -58,7 +58,7 @@ namespace AsciiGames
 
                 game.PlayToEnd();
 
-                AsciiAgent.DrawBoard(game.Board);
+                game.Board.DrawBoard();
 
                 AnnounceWinner(game);
 

@@ -16,5 +16,22 @@ namespace grid_games
             return false;
         }
 
+        public static void DrawBoard(this int[,] board)
+        {
+            StringBuilder sb = new StringBuilder();
+            for (int col = board.GetLength(1) - 1; col >= 0; col--)
+            {
+                for (int row = 0; row < board.GetLength(0); row++)
+                    sb.Append("----");
+                sb.AppendLine("-");
+                for (int row = 0; row < board.GetLength(0); row++)
+                    sb.Append(string.Format("| {0} ", board[row, col] == 1 ? "X" : board[row, col] == -1 ? "O" : " "));
+                sb.AppendLine("|");
+            }
+            for (int col = 0; col < board.GetLength(0); col++)
+                sb.Append("----");
+            sb.AppendLine("-");
+            Console.WriteLine(sb.ToString());
+        }
     }
 }
