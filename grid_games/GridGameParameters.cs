@@ -131,36 +131,7 @@ namespace grid_games
                 return null;
             }
 
-            GridGameParameters gg = new GridGameParameters()
-            {
-                Name = args[0],
-                Description = "",
-                Game = "tictactoe",
-                Inputs = 9,
-                Outputs = 9,
-                Evaluator = "random",
-                WinReward = 2,
-                TieReward = 1,
-                LossReward = 0,
-                Generations = 500,
-                PopulationSize = 100,
-                Species = 10,
-                SocialAgents = false,
-                LamarckianEvolution = false,
-                Subcultures = 10,
-                GenerationsPerMemoryIncrement = 20,
-                MaxMemorySize = 0,
-                ExperimentPath = "../../../experiments/tictactoe/random/",
-                BlondieAgents = false,
-                MinimaxDepth = 9,
-                OpponentPath = null,
-                MatchesPerOpponent = 1
-            };
-
-            gg.ResultsPath = gg.ExperimentPath + gg.Name + "_results.csv";
-            gg.ConfigPath = gg.ExperimentPath + gg.Name + "_config.xml";
-            gg.ChampionPath = gg.ExperimentPath + gg.Name + "_champion.xml";
-
+            GridGameParameters gg = DefaultParameters(args[0]);
 
             for (int i = 1; i < args.Length; i++)
             {
@@ -380,6 +351,40 @@ namespace grid_games
 
             return gg;
 
+        }
+
+        public static GridGameParameters DefaultParameters(string name)
+        {
+            GridGameParameters gg = new GridGameParameters()
+            {
+                Name = name,
+                Description = "",
+                Game = "tictactoe",
+                Inputs = 9,
+                Outputs = 9,
+                Evaluator = "random",
+                WinReward = 2,
+                TieReward = 1,
+                LossReward = 0,
+                Generations = 500,
+                PopulationSize = 100,
+                Species = 10,
+                SocialAgents = false,
+                LamarckianEvolution = false,
+                Subcultures = 10,
+                GenerationsPerMemoryIncrement = 20,
+                MaxMemorySize = 0,
+                ExperimentPath = "../../../experiments/tictactoe/random/",
+                BlondieAgents = false,
+                MinimaxDepth = 9,
+                OpponentPath = null,
+                MatchesPerOpponent = 1
+            };
+
+            gg.ResultsPath = gg.ExperimentPath + gg.Name + "_results.csv";
+            gg.ConfigPath = gg.ExperimentPath + gg.Name + "_config.xml";
+            gg.ChampionPath = gg.ExperimentPath + gg.Name + "_champion.xml";
+            return gg;
         }
 
         static void PrintHelp()

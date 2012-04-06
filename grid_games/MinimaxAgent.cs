@@ -35,12 +35,12 @@ namespace grid_games
 
         public override Move GetMove(int[,] board, bool[,] validNextMoves)
         {
-			ScoredMove move = MiniMax (board, validNextMoves, _params.MinimaxDepth, PlayerId);
+			ScoredMove move = MiniMax (board, validNextMoves, _params.MinimaxDepth, PlayerId, "");
 			return move.Move;
         }
 		
 		
-		public ScoredMove MiniMax(int[,] board, bool[,] validNextMoves, int depth, int player){
+		public ScoredMove MiniMax(int[,] board, bool[,] validNextMoves, int depth, int player, string offset){
             int win;
             bool over = _checkGameOver(board, out win);
             if (over)
@@ -74,7 +74,7 @@ namespace grid_games
                     _validNextMoves(board, validNextMoves, player * -1);
 
                     // Recurse
-					ScoredMove move = MiniMax(board, validNextMoves, depth-1, player * -1);
+					ScoredMove move = MiniMax(board, validNextMoves, depth-1, player * -1, offset + "  ");
 
                     // Undo the move
                     board[i, j] = prev;

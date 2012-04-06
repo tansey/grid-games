@@ -15,14 +15,46 @@ namespace AsciiGames
         {
             do
             {
+                GridGameParameters ggp = GridGameParameters.DefaultParameters("ascii");
+
                 Console.WriteLine("t = Tic-Tac-Toe");
                 Console.WriteLine("c = Connect4");
                 Console.WriteLine("r = Reversi");
                 string gameName = getOption("Game? ", "t", "c", "r");
 
+                switch (gameName)
+                {
+                    case "t": ggp.Game = "tictactoe"; break;
+                    case "c": ggp.Game = "connect4"; break;
+                    case "r": ggp.Game = "reversi"; break;
+                    default:
+                        break;
+                }
+
                 bool player1 = getOption("Do you want to be player 1 or 2? ", "1", "2") == "1";
 
-                GridGame game = CreateGame(gameName, player1);
+                Console.WriteLine("h = Human");
+                Console.WriteLine("m = Minimax");
+                Console.WriteLine("r = Random");
+                string agentType = getOption("Opponent type? ", "h", "m", "r");
+
+                IAgent opp;
+                switch (agentType)
+                {
+                    case "h": opp = new AsciiAgent(1); break;
+                    case "m":
+                        int depth;
+                        string depthStr = getOption("Max tree search depth? ");
+                        while (!int.TryParse(depthStr, out depth))
+                            depthStr = getOption("Invalid depth value. Try again: ");
+                        ggp.MinimaxDepth = depth;
+                        opp = ggp.CreateMinimaxAgent(1); break;
+                    case "r": opp = new RandomAgent(1); break;
+                    default:
+                        throw new Exception("Unknown agent type");
+                }
+
+                GridGame game = CreateGame(gameName, player1, opp);
 
                 game.PlayToEnd();
 
@@ -43,13 +75,12 @@ namespace AsciiGames
                 Console.WriteLine("You tied.");
         }
 
-        private static GridGame CreateGame(string gameName, bool player1)
+        private static GridGame CreateGame(string gameName, bool player1, IAgent opponent)
         {
             IAgent human = new AsciiAgent(0);
-            IAgent cpu = new RandomAgent(1);
 
-            IAgent hero = player1 ? human : cpu;
-            IAgent villain = player1 ? cpu : human;
+            IAgent hero = player1 ? human : opponent;
+            IAgent villain = player1 ? opponent : human;
 
             GridGame game;
             switch (gameName)

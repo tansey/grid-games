@@ -22,22 +22,26 @@ namespace AsciiGames
 
             DisplayValidMoves(validNextMoves);
 
-            int[] move = GetMoveFromConsole();
+            int[] move = GetMoveFromConsole(validNextMoves);
 
             return new Move(move[0], move[1]);
         }
 
-        private int[] GetMoveFromConsole()
+        private int[] GetMoveFromConsole(bool[,] validNextMoves)
         {
             Console.Write("Your move? ");
             string input = Console.ReadLine();
             int[] move = tryParseInput(input);
+            if (!validNextMoves[move[0], move[1]])
+                move = null;
             while (move == null)
             {
                 Console.WriteLine("Invalid input. Try again.");
                 Console.Write("Your move? ");
                 input = Console.ReadLine();
                 move = tryParseInput(input);
+                if (!validNextMoves[move[0], move[1]])
+                    move = null;
             }
             return move;
         }

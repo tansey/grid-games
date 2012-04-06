@@ -44,8 +44,6 @@ namespace AgentBenchmark
             while (!finished) Thread.Sleep(1000);
         }
 
-        
-
         static void ea_UpdateEvent(object sender, EventArgs e)
         {
             // If this run has already finished, don't log anything.
