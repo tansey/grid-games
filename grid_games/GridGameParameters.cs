@@ -161,10 +161,10 @@ namespace grid_games
                     case "e":
                         string eval = args[++i];
                         gg.Evaluator = eval;
-                        if (gg.Evaluator != "roundrobin" && gg.Evaluator != "random" && gg.Evaluator != "minimax"
+                        if (gg.Evaluator != "coevolve" && gg.Evaluator != "random" && gg.Evaluator != "minimax"
                             && gg.Evaluator != "blondie")
                         {
-                            Console.WriteLine("Invalid evaluator: '{0}'. Options are random, roundrobin, minimax, blondie.", eval);
+                            Console.WriteLine("Invalid evaluator: '{0}'. Options are random, coevolve, minimax, blondie.", eval);
                             return null;
                         }
                         break;
@@ -395,7 +395,7 @@ namespace grid_games
             Console.WriteLine("-game -g".PadRight(25) + "Name of the game. Valid options: tictactoe, connect4, reversi. Default: tictactoe");
             Console.WriteLine("-inputs -i".PadRight(25) + "Number of inputs for the neural network (usually # of board spaces). Default: 9");
             Console.WriteLine("-outputs -o".PadRight(25) + "Number of outputs for the neural network (usually # of board spaces). Default: 9");
-            Console.WriteLine("-evaluator -eval -e".PadRight(25) + "Evaluation function to use. Valid options: random, roundrobin, minimax, blondie. Default: random");
+            Console.WriteLine("-evaluator -eval -e".PadRight(25) + "Evaluation function to use. Valid options: random, coevolve, minimax, blondie. Default: random");
             Console.WriteLine("-name -n".PadRight(25) + "Name of the experiment.");
             Console.WriteLine("-winreward -win".PadRight(25) + "Reward an agent receives for winning a game. Default: 2");
             Console.WriteLine("-tiereward -tie".PadRight(25) + "Reward an agent receives for tying a game. Default: 1");

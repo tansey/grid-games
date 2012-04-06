@@ -48,7 +48,7 @@ namespace grid_games
 		public ScoredMove MiniMax(int[,] board, bool[,] validNextMoves, int depth, int player, string padding){
             
             //board.SaveBoard(writer, padding);
-            board.PrintBoard(padding);
+            //board.PrintBoard(padding);
             
             int win;
             bool over = _checkGameOver(board, out win);
@@ -56,32 +56,32 @@ namespace grid_games
             {
                 if (win == PlayerId)
                 {
-                    Console.WriteLine("{0}Reward: {1}", padding, _params.WinReward);
-                    Console.WriteLine();
-                    Console.WriteLine(); 
+                    //Console.WriteLine("{0}Reward: {1}", padding, _params.WinReward);
+                    //Console.WriteLine();
+                    //Console.WriteLine(); 
                     return new ScoredMove(0, 0, _params.WinReward);
                 }
                 else if (win == 0)
                 {
-                    Console.WriteLine("{0}Reward: {1}", padding, _params.TieReward);
-                    Console.WriteLine();
-                    Console.WriteLine();
+                    //Console.WriteLine("{0}Reward: {1}", padding, _params.TieReward);
+                    //Console.WriteLine();
+                    //Console.WriteLine();
                     return new ScoredMove(0, 0, _params.TieReward);
                 }
                 else
                 {
-                    Console.WriteLine("{0}Reward: {1}", padding, _params.LossReward);
-                    Console.WriteLine();
-                    Console.WriteLine();
+                    //Console.WriteLine("{0}Reward: {1}", padding, _params.LossReward);
+                    //Console.WriteLine();
+                    //Console.WriteLine();
                     return new ScoredMove(0, 0, _params.LossReward);
                 }
             }
 
             if (depth == 0)
             {
-                Console.WriteLine("{0}Reward: {1}", padding, _params.LossReward);
-                Console.WriteLine();
-                Console.WriteLine();
+                //Console.WriteLine("{0}Reward: {1}", padding, _params.LossReward);
+                //Console.WriteLine();
+                //Console.WriteLine();
                 return new ScoredMove(0, 0, _boardEval(board, player));
             }
 			

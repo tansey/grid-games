@@ -151,7 +151,7 @@ namespace grid_games
                         brain = genomeDecoder.Decode(LoadPopulation(reader)[0]);
                     return new BenchmarkEvaluator<NeatGenome>(genomeDecoder, Parameters.CreateBlondieAgent(-1, brain), Parameters);
                 case "minimax": return new BenchmarkEvaluator<NeatGenome>(genomeDecoder, Parameters.CreateMinimaxAgent(-1), Parameters);
-                case "roundrobin": return new RoundRobinEvaluator<NeatGenome>(genomeDecoder, Parameters);
+                case "coevolve": return new RoundRobinEvaluator<NeatGenome>(genomeDecoder, Parameters);
                 case "randombenchmark":
                 case "random": return new BenchmarkEvaluator<NeatGenome>(genomeDecoder, new RandomAgent(-1), Parameters);
                 default:
