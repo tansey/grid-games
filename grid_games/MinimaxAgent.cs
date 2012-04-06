@@ -11,7 +11,7 @@ namespace grid_games
     public class MinimaxAgent : Agent
     {
         public delegate bool CheckGameOver(int[,] Board, out int winner);
-        public delegate void GetValidNextMoves(int[,] board, bool[,] validNextMoves);
+        public delegate void GetValidNextMoves(int[,] board, bool[,] validNextMoves, int player);
         public delegate double BoardEval(int[,] board, int player);
 
         CheckGameOver _checkGameOver;
@@ -61,30 +61,30 @@ namespace grid_games
 			ScoredMove nextMove = null;
 			for (int i = 0; i < board.GetLength(0); i++){
 				for (int j = 0; j < board.GetLength(1); j++) {
+                    
+                    // Only try valid next moves.
 					if (!validNextMoves[i,j])
                         continue;
-					
-                    //int [,] newBoard = new int[board.GetLength(0),board.GetLength(1)];
-                    //Array.Copy(board, newBoard, board.Length);
-                    //newBoard[i,j] = player;
 
-                    // Temporarily move here
+                    // Try moving here
                     int prev = board[i, j];
                     board[i, j] = player;
 
                     // Update the valid moves for the next player
-                    _validNextMoves(board, validNextMoves);
+                    _validNextMoves(board, validNextMoves, player * -1);
 
                     // Recurse
 					ScoredMove move = MiniMax(board, validNextMoves, depth-1, player * -1);
 
-                    // Undo the temporary move
+                    // Undo the move
                     board[i, j] = prev;
 
-                    // If we found a win, return this move
-                    if (move.Score == 2)
-                        //return move;
-                        return new ScoredMove(i, j, 2);
+                    // If we found a win, return this move.
+                    if (move.Score == _params.WinReward)
+                        return new ScoredMove(i, j, _params.WinReward);
+
+                    // If we found a new highest-scoring branch,
+                    // set it as the current best.
 					if (move.Score > alpha)
 					{
 						alpha = move.Score;
@@ -93,6 +93,8 @@ namespace grid_games
 					
 				}
 			}
+
+            // Return the best move we found.
 			return nextMove;
 		}
 	}

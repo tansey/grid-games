@@ -123,7 +123,7 @@ namespace grid_games.TicTacToe
             return false;
         }
 
-        public static void GetValidNextMoves(int[,] board, bool[,] validNextMoves)
+        public static void GetValidNextMoves(int[,] board, bool[,] validNextMoves, int player)
         {
             // Any empty square is a valid move
             for (int i = 0; i < 3; i++)
@@ -139,7 +139,7 @@ namespace grid_games.TicTacToe
 
         void setValidNextMoves()
         {
-            GetValidNextMoves(Board, ValidNextMoves);
+            GetValidNextMoves(Board, ValidNextMoves, ActingPlayer);
         }
 
         public override void Reset()
