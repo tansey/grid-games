@@ -2,7 +2,7 @@ using System;
 
 namespace grid_games
 {
-	public class MiniMaxConnectFourAgent : MiniMaxAgent
+	public class MiniMaxConnectFourAgent : MinimaxAgent
 	{
         public MiniMaxConnectFourAgent(int id) : base(id)
         {
@@ -16,7 +16,6 @@ namespace grid_games
 		
 		
 		int winner(int[,] Board) {
-var Board = game.Board;
 			
 			// Check horizontal
 			int num_in_a_row = 0;
@@ -30,7 +29,7 @@ var Board = game.Board;
 					if (newtype == oldtype && newtype != 0){
 						num_in_a_row += 1;
 						if (num_in_a_row == 4) {
-							return t1;
+							return newtype;
 						}
 					}
 					else {
@@ -48,7 +47,7 @@ var Board = game.Board;
 					if (newtype == oldtype && newtype != 0){
 						num_in_a_row += 1;
 						if (num_in_a_row == 4) {
-							return t1;
+							return newtype;
 						}
 					}
 					else {
@@ -100,11 +99,7 @@ var Board = game.Board;
 		}
 		
 		public int EvaluationFunction(int[,] board) {
-			var sum = 0;
-				for (int i = 0; i < 8; i++)
-					for (int j = 0; j < 8; j++)
-						sum += board[i,j];
-			return sum;
+			return 0;
 			
 		}
 		

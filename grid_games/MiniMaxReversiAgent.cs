@@ -2,7 +2,7 @@ using System;
 
 namespace grid_games
 {
-	public class MiniMaxReversiAgent : MiniMaxAgent
+	public class MiniMaxReversiAgent : MinimaxAgent
 	{
         public MiniMaxReversiAgent(int id) : base(id)
         {
