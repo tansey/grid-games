@@ -14,6 +14,7 @@ namespace grid_games
     public class BlondieAgent : Agent
     {
         MinimaxAgent _minimax;
+        GridGameParameters _params;
 
         public IBlackBox Brain { get; set; }
 
@@ -25,6 +26,7 @@ namespace grid_games
             : base(id)
         {
             Brain = brain;
+            _params = parameters;
             _minimax = new MinimaxAgent(id, check, valid, Evaluate, parameters);
         }
 
@@ -51,7 +53,7 @@ namespace grid_games
             Brain.Activate();
 
             // Return the value of the board
-            return Brain.OutputSignalArray[0];
+            return Brain.OutputSignalArray[0] * _params.WinReward;
         }
     }
 }
