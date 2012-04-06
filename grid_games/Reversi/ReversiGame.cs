@@ -16,6 +16,7 @@ namespace grid_games.Reversi
 
         void agentPassed(GridGame game, int player)
         {
+			Console.WriteLine("No Valid Moves for player {0}", ActingPlayer);
             setValidNextMoves();
         }
 
@@ -23,6 +24,7 @@ namespace grid_games.Reversi
         {
             flipPieces(game, player, m);
             checkGameOver(game, player, m);
+			setValidNextMoves();
         }
 
         void flipPieces(GridGame game, int player, Move m)
@@ -30,10 +32,10 @@ namespace grid_games.Reversi
 			//Console.WriteLine("Flip {0}, {1}", m.Column, m.Row);
             int i = m.Row;
 			int j = m.Column;
-			Board[m.Column, m.Row] = ActingPlayer;
+			//Board[m.Column, m.Row] = ActingPlayer;
 			for (int k = -1; k < 2; k++)
 				for (int l = -1; l < 2; l++)
-					if (validDirection(i,j,k,l))
+					if (validDirection(i,j,k,l, ActingPlayer))
 				{
 					//Console.WriteLine("{0}, {1}", m.Column, m.Row);
 						flipTokens(i,j,k,l);
@@ -61,18 +63,17 @@ namespace grid_games.Reversi
 				else
 					opponent_found = false;
 				// did we find an opponent's piece? flip it!
-				if (opponent_found){
+				if (opponent_found)
 					Board[iidx, jidx] = ActingPlayer;
-				}
-				else
-					opponent_found = false;
 					
 				// we keep going as long as they have pieces
 			} while (valid_space && opponent_found);										
 			
 		}
 		
-		bool validDirection(int i, int j, int k, int l){
+		bool validDirection(int i, int j, int k, int l, int player){
+			if (j == 0 && k == 0)
+				return false;
 													
 			// first we look for opponents pieces
 			bool opponent_found = false;
@@ -89,7 +90,7 @@ namespace grid_games.Reversi
 				// make sure we haven't gone off the board
 				valid_space = (iidx >= 0 && iidx < 8 && jidx >= 0 && jidx < 8);
 				if (valid_space)
-					opponent_found = Board[iidx, jidx] == ActingPlayer * -1;	
+					opponent_found = Board[iidx, jidx] == (player * -1);	
 				else
 					opponent_found = false;
 				if (opponent_found)
@@ -100,7 +101,7 @@ namespace grid_games.Reversi
 			// ok, if there are no more of their guys, we look for one of ours.
 			// if we find one, then we can put our piece on the original square
 			if (opponent_ever_found){
-				if (valid_space && Board[iidx, jidx] == ActingPlayer){
+				if (valid_space && Board[iidx, jidx] == player){
 					//Console.WriteLine("{0},{1}",iidx, jidx
 					return true;
 				}
@@ -115,22 +116,11 @@ namespace grid_games.Reversi
         {
 			
 			//Console.Out.WriteLine("Check {0},{1}", m.Row, m.Column);
-            setValidNextMoves();
-			if (noValidMoves()){
-				ActingPlayer = ActingPlayer *  -1;
-				setValidNextMoves();
-				if (noValidMoves()){
+				if (noValidMoves(1) && noValidMoves(-1)){
 				calculateWinner();
 				GameOver = true;
 				return;
-				}
-				else {
-					ActingPlayer = ActingPlayer *  -1;
-					setValidNextMoves();
-				}	
-
 			}
-
         }
 		
 		void calculateWinner(){
@@ -150,34 +140,46 @@ namespace grid_games.Reversi
 				Winner = 0;
 		}
 		
+		
 		void setValidNextMoves()
         {
+			bool [,] validNext = getValidNextMoves(ActingPlayer);
             //Console.Out.WriteLine();
             for (int i = 0; i < 8; i++){
 				//Console.Out.WriteLine();
                 for (int j = 0; j < 8; j++){
+					ValidNextMoves[i, j] = validNext[i,j];
+				}
+			}
+		}
+		
+		bool[,] getValidNextMoves(int player)
+		{
+			bool [,] validNext = new bool[9,9];
+			//Console.Out.WriteLine();
+            for (int i = 0; i < 8; i++){
+				//Console.Out.WriteLine();
+                for (int j = 0; j < 8; j++){
 					//Console.Out.Write("{0}\t", Board[i,j]);
-					
-					ValidNextMoves[i, j] = false;
+					validNext[i, j] = false;
 					if (Board[i,j] == 0) {
 						//Look in all eight dirs for a move
 						// there is only a move if looking in one direction we
 						// see opponent's pieces followed by one of our pieces.
 						for (int k = -1; k < 2; k++){
 							for (int l = -1; l < 2; l++){
-								if (validDirection(i,j,k,l))
+								if (validDirection(i,j,k,l, player * -1))
 								{
 									//Console.WriteLine("{0}, {1}", i, j);
-									ValidNextMoves[i, j] = true;
+									validNext[i, j] = true;
 								}
 							}
 						}
 					}
 				}
 			}
-			//Console.WriteLine("{0}, {1}", 0,1);
-			//Console.WriteLine("{0}", ValidNextMoves);
-			//Console.Out.WriteLine();
+			
+			return validNext;
 		}
 
         public override void Reset()
@@ -192,11 +194,12 @@ namespace grid_games.Reversi
         }
 			
 			
-		bool noValidMoves()		
-		{    
+		bool noValidMoves(int player)		
+		{   
+			bool[,] validNext = getValidNextMoves(player);
 			for (int i = 0; i < 8; i++)
 				for (int j = 0; j < 8; j++)
-					if (ValidNextMoves[i, j] == true)
+					if (validNext[i, j] == true)
 						return false;
 			return true;
 		}
