@@ -70,6 +70,8 @@
     <Compile Include="MinimaxAgent.cs" />
     <Compile Include="ValuedMove.cs" />
     <Compile Include="ScoredMove.cs" />
+    <Compile Include="MiniMaxReversiAgent.cs" />
+    <Compile Include="MiniMaxConnectFourAgent.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
