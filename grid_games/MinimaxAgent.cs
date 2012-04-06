@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using grid_games;
+using System.IO;
 namespace grid_games
 {
     /// <summary>
@@ -33,42 +34,54 @@ namespace grid_games
             _params = parameters;
         }
 
+        TextWriter writer;
         public override Move GetMove(int[,] board, bool[,] validNextMoves)
         {
-			ScoredMove move = MiniMax (board, validNextMoves, _params.MinimaxDepth, PlayerId);
-			return move.Move;
+            using (writer = new StreamWriter("boards.txt"))
+            {
+                ScoredMove move = MiniMax(board, validNextMoves, _params.MinimaxDepth, PlayerId, "");
+                return move.Move;
+            }
         }
 		
 		
-		public ScoredMove MiniMax(int[,] board, bool[,] validNextMoves, int depth, int player){
+		public ScoredMove MiniMax(int[,] board, bool[,] validNextMoves, int depth, int player, string padding){
+            
+            //board.SaveBoard(writer, padding);
+            board.PrintBoard(padding);
+            
             int win;
             bool over = _checkGameOver(board, out win);
             if (over)
             {
                 if (win == PlayerId)
                 {
-                    //board.DrawBoard();
-                    //Console.WriteLine("Reward: {0}", _params.WinReward);
+                    Console.WriteLine("{0}Reward: {1}", padding, _params.WinReward);
+                    Console.WriteLine();
+                    Console.WriteLine(); 
                     return new ScoredMove(0, 0, _params.WinReward);
                 }
                 else if (win == 0)
                 {
-                    //board.DrawBoard();
-                    //Console.WriteLine("Reward: {0}", _params.TieReward);
+                    Console.WriteLine("{0}Reward: {1}", padding, _params.TieReward);
+                    Console.WriteLine();
+                    Console.WriteLine();
                     return new ScoredMove(0, 0, _params.TieReward);
                 }
                 else
                 {
-                    //board.DrawBoard();
-                    //Console.WriteLine("Reward: {0}", _params.LossReward);
+                    Console.WriteLine("{0}Reward: {1}", padding, _params.LossReward);
+                    Console.WriteLine();
+                    Console.WriteLine();
                     return new ScoredMove(0, 0, _params.LossReward);
                 }
             }
 
             if (depth == 0)
             {
-                //board.DrawBoard();
-                //Console.WriteLine("Reward: {0}", _params.LossReward);
+                Console.WriteLine("{0}Reward: {1}", padding, _params.LossReward);
+                Console.WriteLine();
+                Console.WriteLine();
                 return new ScoredMove(0, 0, _boardEval(board, player));
             }
 			
@@ -77,6 +90,7 @@ namespace grid_games
 				alpha = double.MaxValue;
 
 			ScoredMove nextMove = null;
+            bool[,] oppValidMoves = new bool[validNextMoves.GetLength(0), validNextMoves.GetLength(1)];
 			for (int i = 0; i < board.GetLength(0); i++){
 				for (int j = 0; j < board.GetLength(1); j++) {
                     
@@ -89,18 +103,18 @@ namespace grid_games
                     board[i, j] = player;
 
                     // Update the valid moves for the next player
-                    _validNextMoves(board, validNextMoves, player * -1);
+                    _validNextMoves(board, oppValidMoves, player * -1);
 
                     // Recurse
-					ScoredMove move = MiniMax(board, validNextMoves, depth-1, player * -1);
+					ScoredMove move = MiniMax(board, oppValidMoves, depth-1, player * -1, padding + " + ");
 
                     // Undo the move
                     board[i, j] = prev;
 
                     // If we found a win, return this move.
 					if (player == PlayerId){
-                    	if (move.Score == _params.WinReward)
-                        	return new ScoredMove(i, j, _params.WinReward);
+                        if (move.Score == _params.WinReward)
+                            return new ScoredMove(i, j, _params.WinReward);
 
                     	// If we found a new highest-scoring branch,
                     	// set it as the current best.
@@ -111,8 +125,8 @@ namespace grid_games
 						}
 					}
 					else {
-                    	if (move.Score == _params.LossReward)
-                        	return new ScoredMove(i, j, _params.LossReward);
+                        if (move.Score == _params.LossReward)
+                            return new ScoredMove(i, j, _params.LossReward);
 
                     	// If we found a new highest-scoring branch,
                     	// set it as the current best.

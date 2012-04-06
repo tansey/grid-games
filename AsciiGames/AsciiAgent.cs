@@ -18,7 +18,7 @@ namespace AsciiGames
 
         public override Move GetMove(int[,] board, bool[,] validNextMoves)
         {
-            board.DrawBoard();
+            board.PrintBoard();
 
             DisplayValidMoves(validNextMoves);
 
