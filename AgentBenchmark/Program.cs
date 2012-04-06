@@ -13,9 +13,6 @@ namespace AgentBenchmark
 {
     class Program
     {
-        static string EXPERIMENT_DIR = "../../../experiments/";
-        static string RESULTS_FILE;
-        static string CONFIG_FILE;
         static GridGameExperiment experiment;
         static NeatEvolutionAlgorithm<NeatGenome> ea;
         static bool finished = false;
@@ -28,18 +25,18 @@ namespace AgentBenchmark
             if (gg == null)
                 return;
 
-            using (TextWriter writer = new StreamWriter(CONFIG_FILE))
+            using (TextWriter writer = new StreamWriter(gg.ConfigPath))
             {
                 XmlSerializer ser = new XmlSerializer(typeof(GridGameParameters));
                 ser.Serialize(writer, gg);
             }
 
-            experiment = new GridGameExperiment(CONFIG_FILE);
+            experiment = new GridGameExperiment(gg.ConfigPath);
             ea = experiment.CreateEvolutionAlgorithm();
             ea.UpdateScheme = new SharpNeat.Core.UpdateScheme(1);
             ea.UpdateEvent += new EventHandler(ea_UpdateEvent);
 
-            using (TextWriter writer = new StreamWriter(RESULTS_FILE))
+            using (TextWriter writer = new StreamWriter(gg.ResultsPath))
                 writer.WriteLine("Generation,Best,Average");
 
             ea.StartContinue();
@@ -71,7 +68,7 @@ namespace AgentBenchmark
                                generation, topFitness, averageFitness);
 
             // Append the progress to the results file in CSV format.
-            using (TextWriter writer = new StreamWriter(RESULTS_FILE, true))
+            using (TextWriter writer = new StreamWriter(experiment.Parameters.ResultsPath, true))
                 writer.WriteLine(generation + "," + averageFitness + "," + topFitness);
 
             // Stop if we've evolved for enough generations
