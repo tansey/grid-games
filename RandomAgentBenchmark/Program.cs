@@ -36,8 +36,9 @@ namespace RandomAgentBenchmark
                 Species = 10,
                 SocialAgents = true,
                 LamarckianEvolution = true,
-                GenerationsPerMemoryIncrement = 10,
-                MaxMemorySize = 3
+                Subcultures = 10,
+                GenerationsPerMemoryIncrement = 1,
+                MaxMemorySize = 0
             };
             using (TextWriter writer = new StreamWriter(EXPERIMENT_DIR + "config.xml"))
             {

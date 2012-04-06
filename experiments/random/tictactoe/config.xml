@@ -10,10 +10,11 @@
   <Inputs>42</Inputs>
   <Outputs>42</Outputs>
   <Species>10</Species>
+  <Subcultures>10</Subcultures>
   <Generations>500</Generations>
   <Evaluator>Random</Evaluator>
-  <GenerationsPerMemoryIncrement>10</GenerationsPerMemoryIncrement>
-  <MaxMemorySize>3</MaxMemorySize>
+  <GenerationsPerMemoryIncrement>1</GenerationsPerMemoryIncrement>
+  <MaxMemorySize>0</MaxMemorySize>
   <SocialAgents>true</SocialAgents>
   <LamarckianEvolution>true</LamarckianEvolution>
 </GridGameParameters>

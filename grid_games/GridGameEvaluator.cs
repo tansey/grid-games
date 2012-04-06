@@ -6,6 +6,7 @@ using SharpNeat.Core;
 using SharpNeat.Genomes.Neat;
 using SharpNeat.Phenomes;
 using SharpNeat.Phenomes.NeuralNets;
+using System.Diagnostics;
 
 namespace grid_games
 {
@@ -16,8 +17,10 @@ namespace grid_games
         protected ulong _evaluationCount;
         protected IAgent[] _agents;
         protected IList<NeatGenome> _genomeList;
+        protected int[] _subcultures;
         protected GridGameParameters _params;
         protected int _generation;
+        protected Random _random;
 
         public int CurrentMemorySize { get; set; }
 
@@ -31,6 +34,8 @@ namespace grid_games
             _evaluationCount = 0;
 
             CurrentMemorySize = 1;
+
+            _random = new Random();
         }
         
         public void Evaluate(IList<TGenome> genomeList)
@@ -51,7 +56,7 @@ namespace grid_games
 
             if (_params.SocialAgents 
                 && _generation % _params.GenerationsPerMemoryIncrement == 0
-                && CurrentMemorySize < _params.MaxMemorySize)
+                && (_params.MaxMemorySize == 0 || CurrentMemorySize < _params.MaxMemorySize))
                 CurrentMemorySize++;
         }
 
@@ -63,7 +68,8 @@ namespace grid_games
             var observation = ((SocialAgent)_agents[winnerIdx]).Memory;
             for (int i = 0; i < _agents.Length; i++)
             {
-                if (i == winnerIdx)
+                // Do not train yourself or anyone outside your subculture
+                if (i == winnerIdx || _subcultures[i] != _subcultures[winnerIdx])
                     continue;
 
                 var observer = (SocialAgent)_agents[i];
@@ -147,6 +153,42 @@ namespace grid_games
                 else
                     _agents[i] = _params.SocialAgents ? new SocialAgent(i, phenome, CurrentMemorySize) : new NeuralAgent(i, phenome);
             }
+
+            if (_params.SocialAgents)
+                CreateSubcultures();
+        }
+
+        /// <summary>
+        /// Puts the agents into equal-sized subcultural groups.
+        /// 
+        /// <param name="numGroups">The number of groups to divide the population into</param>
+        /// </summary>
+        private void CreateSubcultures()
+        {
+            int minGroupSize = _agents.Length / _params.Subcultures;
+
+            _subcultures = new int[_agents.Length];
+
+            // Create a list of all the teacher IDs
+            List<int> agentIds = new List<int>();
+            for (int i = 0; i < _subcultures.Length; i++)
+            {
+                _subcultures[i] = -1;
+                agentIds.Add(i);
+            }
+
+            // Select each ID for each subculture randomly
+            for (int i = 0; i < _subcultures.Length; i++)
+            {
+                int temp = _random.Next(agentIds.Count);
+                int idx = agentIds[temp];
+                _subcultures[idx] = i % _params.Subcultures;
+                agentIds.RemoveAt(temp);
+            }
+
+            Debug.Assert(_subcultures.GroupBy(g => g).Min(ag => ag.Count()) >= minGroupSize);
+            Debug.Assert(_subcultures.GroupBy(g => g).Max(ag => ag.Count()) <= minGroupSize + 1);
+            Debug.Assert(_subcultures.GroupBy(g => g).Count() == _params.Subcultures);
         }
 
         public ulong EvaluationCount

@@ -49,12 +49,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Agent.cs" />
+    <Compile Include="BoardExtensions.cs" />
     <Compile Include="ConnectFour\ConnectFourGame.cs" />
     <Compile Include="GridGame.cs" />
     <Compile Include="GridGameEvaluator.cs" />
     <Compile Include="GridGameExperiment.cs" />
     <Compile Include="GridGameParameters.cs" />
     <Compile Include="IAgent.cs" />
+    <Compile Include="MinimaxBenchmarkEvaluator.cs" />
     <Compile Include="Move.cs" />
     <Compile Include="NeuralAgent.cs" />
     <Compile Include="NumberExtensions.cs" />
@@ -65,7 +67,7 @@
     <Compile Include="SocialAgent.cs" />
     <Compile Include="StateActionReward.cs" />
     <Compile Include="TicTacToe\TicTacToeGame.cs" />
-    <Compile Include="PerfectTTTAgent.cs" />
+    <Compile Include="MinimaxAgent.cs" />
     <Compile Include="ValuedMove.cs" />
     <Compile Include="ScoredMove.cs" />
   </ItemGroup>

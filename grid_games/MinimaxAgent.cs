@@ -8,14 +8,9 @@ namespace grid_games
     /// <summary>
     /// Randomly chooses and returns a valid move.
     /// </summary>
-    public class PerfectTTTAgent : Agent
+    public class MinimaxAgent : Agent
     {
-        public PerfectTTTAgent(int id) : base(id)
-        {
-        }
-
-        public PerfectTTTAgent(int id, int seed)
-            : base(id)
+        public MinimaxAgent(int id) : base(id)
         {
         }
 
@@ -23,7 +18,6 @@ namespace grid_games
         {
 			ScoredMove move = MiniMax (board, 9, PlayerId);
 			return move.Move;
-
         }
 		
 		
@@ -89,17 +83,10 @@ namespace grid_games
 		}
 		
 		bool tie(int[,] board) {
-			return !HasEmptyCell(board);
+			return !board.HasEmptyCell();
 		}
 		
-		public bool HasEmptyCell(int [,] board)
-        {
-            for (int i = 0; i < 3; i++)
-                for (int j = 0; j < 3; j++)
-                    if (board[i, j] == 0)
-                        return true;
-            return false;
-        }
+		
 		
 		
 		public ScoredMove MiniMax(int[,] board, int depth, int player){
@@ -113,20 +100,15 @@ namespace grid_games
 			if (tie(board) || depth == 0)
 				return new ScoredMove(0,0,1);
 			
-			return new ScoredMove(0,0,1);
-			
 			int alpha = -100;
-			ScoredMove nextMove;
+			ScoredMove nextMove = null;
 			for (int i = 0; i < 3; i++){
 				for (int j = 0; j < 3; j++) {
 					if (board[i,j] == 0)
 					{
 						int [,] newBoard = new int[3,3];
-						for (int i1 = 0; i1 < 3; i++){
-							for (int j1 = 0; j1 < 3; j++) {
-								newBoard[i1,j1] = board[i,j];
-							}
-						}
+                        Array.Copy(board, newBoard, board.Length);
+
 						newBoard[i,j] = player;
 						ScoredMove move = MiniMax(newBoard, depth-1, player * -1);
 						if (move.Score == 2)
