@@ -29,6 +29,7 @@ namespace grid_games
         public int MaxMemorySize { get; set; }
         public bool SocialAgents { get; set; }
         public bool LamarckianEvolution { get; set; }
+        public int MinimaxDepth { get; set; }
 
         /// <summary>
         /// Returns a function that creates a new grid game.
@@ -58,6 +59,32 @@ namespace grid_games
                 }
 
                 return null;
+            }
+        }
+
+        public MinimaxAgent CreateMinimaxAgent(int id)
+        {
+            switch (Game.ToLower())
+            {
+                case "tic-tac-toe":
+                case "tictactoe":
+                case "tic tac toe": return new MinimaxAgent(id, 
+                    TicTacToeGame.CheckGameOver, 
+                    TicTacToeGame.GetValidNextMoves, 
+                    TicTacToeGame.EvaluateBoard,
+                    this);
+
+                case "connect four":
+                case "connect4":
+                case "connect 4":
+                case "connect-four":
+                case "connect-4":
+                case "connectfour": return new MinimaxAgent(id, null, null, null, this);
+
+                case "reversi":
+                case "othello": return new MinimaxAgent(id, null, null, null, this);
+                default:
+                    throw new Exception("Unknown game: " + Game);
             }
         }
     }

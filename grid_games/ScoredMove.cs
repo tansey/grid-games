@@ -6,9 +6,9 @@ namespace grid_games
 	{
 
         public readonly Move Move;
-        public readonly int Score;
+        public readonly double Score;
 
-		public ScoredMove (int x, int y, int score)
+		public ScoredMove (int x, int y, double score)
 		{
 			Score = score;
 			Move = new Move(x,y);

@@ -2,7 +2,7 @@ using System;
 
 namespace grid_games
 {
-	public class MiniMaxConnectFourAgent : MinimaxAgent
+	public class MiniMaxConnectFourAgent : Agent
 	{
         public MiniMaxConnectFourAgent(int id) : base(id)
         {
@@ -117,7 +117,7 @@ namespace grid_games
 			if (depth == 0)
 				return new ScoredMove(0, 0, EvaluationFunction(board));
 			
-			int alpha = -100;
+			double alpha = -100;
 			ScoredMove nextMove = null;
 			for (int i = 0; i < 3; i++){
 				for (int j = 0; j < 3; j++) {

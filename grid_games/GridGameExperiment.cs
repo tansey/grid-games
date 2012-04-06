@@ -145,6 +145,7 @@ namespace grid_games
 
             switch (Parameters.Evaluator.ToString().ToLower().Replace(" ", "").Replace("-", ""))
             {
+                case "minimax": return new MinimaxBenchmarkEvaluator<NeatGenome>(genomeDecoder, Parameters);
                 case "roundrobin": return new GridGameEvaluator<NeatGenome>(genomeDecoder, Parameters);
                 case "randombenchmark":
                 case "random": return new RandomBenchmarkEvaluator<NeatGenome>(genomeDecoder, Parameters);

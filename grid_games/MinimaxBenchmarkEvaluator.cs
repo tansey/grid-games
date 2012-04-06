@@ -11,26 +11,28 @@ namespace grid_games
     public class MinimaxBenchmarkEvaluator<TGenome> : GridGameEvaluator<TGenome>
         where TGenome : NeatGenome, global::SharpNeat.Core.IGenome<TGenome>
     {
+        IAgent _minimax;
+
         public MinimaxBenchmarkEvaluator(IGenomeDecoder<TGenome, IBlackBox> genomeDecoder,
                                 GridGameParameters parameters) : base(genomeDecoder, parameters)
         {
+            _minimax = parameters.CreateMinimaxAgent(-1);
         }
 
         protected override void evaluateAgents()
         {
-            IAgent minimaxAgent = new MinimaxAgent(-1);
             double[] scores = new double[_agents.Length];
             
             for (int i = 0; i < _agents.Length; i++)
             {
-                int winner = evaluate(_agents[i], minimaxAgent);
+                int winner = evaluate(_agents[i], _minimax);
 
                 if (winner == 1)
                     scores[i] += _params.WinReward;
                 else if (winner == 0)
                     scores[i] += _params.TieReward;
 
-                winner = evaluate(minimaxAgent, _agents[i]);
+                winner = evaluate(_minimax, _agents[i]);
 
                 if (winner == -1)
                     scores[i] += _params.WinReward;
@@ -44,5 +46,7 @@ namespace grid_games
                 _genomeList[i].EvaluationInfo.AlternativeFitness = scores[i];
             }
         }
+
+        
     }
 }

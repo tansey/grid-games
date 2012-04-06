@@ -252,6 +252,25 @@ namespace AgentBenchmark
                         gg.LamarckianEvolution = true;
                         break;
 
+                    case "dir":
+                        string dir = args[++i];
+                        if (!dir.EndsWith("/"))
+                            dir += "/";
+                        EXPERIMENT_DIR = dir; 
+                        RESULTS_FILE = EXPERIMENT_DIR + offset + "_results.csv";
+                        CONFIG_FILE = EXPERIMENT_DIR + offset + "_config.xml";
+                        break;
+
+                    case "depth":
+                        int depth;
+                        if (!int.TryParse(args[++i], out depth))
+                        {
+                            Console.WriteLine("Invalid depth size: '{0}'.", args[i]);
+                            return null;
+                        }
+                        gg.MinimaxDepth = depth;
+                        break;
+
                     default:
                         Console.WriteLine("Invalid option: '{0}'. Option unknown. Use -help to see options.", args[i].Substring(1));
                         return null;
@@ -281,8 +300,10 @@ namespace AgentBenchmark
             Console.WriteLine("-social".PadRight(25) + "Use social learning (ESL) agents. Default: false (plain neuroevolution)");
             Console.WriteLine("-lamarckian -lamarck".PadRight(25) + "Use Lamarckian evolution. Default: false (Darwinian evolution)");
             Console.WriteLine("-subcultures -subs -sub".PadRight(25) + "Number of subcultures to divide the agents into. This is the ESL parameter. Default: 10");
-            Console.WriteLine("-memoryincrement -meminc".PadRight(25) + "The number of generations between increments of the memory size. Default: 20");
-            Console.WriteLine("-maxmemory -maxmem".PadRight(25) + "The maximum size of the memory window for social agents. Default: 0 (unlimited)");
+            Console.WriteLine("-memoryincrement -meminc".PadRight(25) + "Number of generations between increments of the memory size. Default: 20");
+            Console.WriteLine("-maxmemory -maxmem".PadRight(25) + "Maximum size of the memory window for social agents. Default: 0 (unlimited)");
+            Console.WriteLine("-dir".PadRight(25) + "Directory to save the experiment output. Default: ../../../experiments/[game]/[eval]");
+            Console.WriteLine("-depth".PadRight(25) + "Maximum search depth for minimax agents. Default: 9");
         }
 
         static void ea_UpdateEvent(object sender, EventArgs e)
