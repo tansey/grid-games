@@ -116,12 +116,28 @@ namespace grid_games.Reversi
         {
 			
 			//Console.Out.WriteLine("Check {0},{1}", m.Row, m.Column);
-				if (noValidMoves(1) && noValidMoves(-1)){
+			if (oneRemainingPlayer() || !game.HasEmptyCell() ){
 				calculateWinner();
 				GameOver = true;
-				return;
 			}
         }
+		
+		bool oneRemainingPlayer(){
+			bool player1 = false;
+			bool player2 = false;
+			for (int i = 0; i < 8; i++){
+				for (int j = 0; j < 8; j++){
+					if (Board[i,j] == 1)
+						player1 = true;
+					else if (Board[i,j] == -1)
+						player2 = true;
+					if (player1 && player2)
+						return false;
+				}
+			}
+			
+			return true;
+		}
 		
 		void calculateWinner(){
 			int sum = 0;
@@ -155,7 +171,7 @@ namespace grid_games.Reversi
 		
 		bool[,] getValidNextMoves(int player)
 		{
-			bool [,] validNext = new bool[9,9];
+			bool [,] validNext = new bool[8,8];
 			//Console.Out.WriteLine();
             for (int i = 0; i < 8; i++){
 				//Console.Out.WriteLine();
