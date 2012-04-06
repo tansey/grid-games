@@ -25,7 +25,7 @@ namespace grid_games
         public GridGameParameters Parameters { get; set; }
         public NeatGenomeParameters NeatParameters { get; set; }
         public NeatEvolutionAlgorithmParameters EvoParameters { get; set; }
-        public GridGameEvaluator<NeatGenome> Evaluator { get; set; }
+        public RoundRobinEvaluator<NeatGenome> Evaluator { get; set; }
 
         public GridGameExperiment(string paramsFilename)
         {
@@ -138,17 +138,22 @@ namespace grid_games
             return ea;
         }
 
-        public GridGameEvaluator<NeatGenome> CreateEvaluator()
+        public RoundRobinEvaluator<NeatGenome> CreateEvaluator()
         {
             // Create genome decoder.
             IGenomeDecoder<NeatGenome, IBlackBox> genomeDecoder = CreateGenomeDecoder();
 
             switch (Parameters.Evaluator.ToString().ToLower().Replace(" ", "").Replace("-", ""))
             {
-                case "minimax": return new MinimaxBenchmarkEvaluator<NeatGenome>(genomeDecoder, Parameters);
-                case "roundrobin": return new GridGameEvaluator<NeatGenome>(genomeDecoder, Parameters);
+                case "blondie":
+                    IBlackBox brain;
+                    using(XmlReader reader = XmlReader.Create(Parameters.OpponentPath))
+                        brain = genomeDecoder.Decode(LoadPopulation(reader)[0]);
+                    return new BenchmarkEvaluator<NeatGenome>(genomeDecoder, Parameters.CreateBlondieAgent(-1, brain), Parameters);
+                case "minimax": return new BenchmarkEvaluator<NeatGenome>(genomeDecoder, Parameters.CreateMinimaxAgent(-1), Parameters);
+                case "roundrobin": return new RoundRobinEvaluator<NeatGenome>(genomeDecoder, Parameters);
                 case "randombenchmark":
-                case "random": return new RandomBenchmarkEvaluator<NeatGenome>(genomeDecoder, Parameters);
+                case "random": return new BenchmarkEvaluator<NeatGenome>(genomeDecoder, new RandomAgent(-1), Parameters);
                 default:
                     break;
             }

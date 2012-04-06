@@ -69,7 +69,7 @@ namespace AgentBenchmark
 
             // Append the progress to the results file in CSV format.
             using (TextWriter writer = new StreamWriter(experiment.Parameters.ResultsPath, true))
-                writer.WriteLine(generation + "," + averageFitness + "," + topFitness);
+                writer.WriteLine(generation + "," + topFitness + "," + averageFitness);
 
             // Stop if we've evolved for enough generations
             if (ea.CurrentGeneration >= experiment.Parameters.Generations)

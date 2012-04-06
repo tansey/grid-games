@@ -11,5 +11,6 @@ namespace grid_games
         int AgentId { get; set; }
 
         Move GetMove(int[,] board, bool[,] validNextMoves);
+        void Reset();
     }
 }

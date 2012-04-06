@@ -69,5 +69,11 @@ namespace grid_games
             foreach (var step in observation)
                 network.Train(step.State, step.Action);
         }
+
+        public override void Reset()
+        {
+            base.Reset();
+            Memory.Clear();
+        }
     }
 }

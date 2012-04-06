@@ -10,7 +10,7 @@ using System.Diagnostics;
 
 namespace grid_games
 {
-    public class GridGameEvaluator<TGenome> : IGenomeListEvaluator<TGenome>
+    public class RoundRobinEvaluator<TGenome> : IGenomeListEvaluator<TGenome>
         where TGenome : NeatGenome, global::SharpNeat.Core.IGenome<TGenome>
     {
         protected readonly IGenomeDecoder<TGenome, IBlackBox> _genomeDecoder;
@@ -26,7 +26,7 @@ namespace grid_games
 
         public bool StopConditionSatisfied { get { return false; } }
 
-        public GridGameEvaluator(IGenomeDecoder<TGenome, IBlackBox> genomeDecoder,
+        public RoundRobinEvaluator(IGenomeDecoder<TGenome, IBlackBox> genomeDecoder,
                                 GridGameParameters parameters)
         {
             _genomeDecoder = genomeDecoder;
@@ -150,8 +150,12 @@ namespace grid_games
                     Console.WriteLine("Couldn't decode genome {0}!", i);
                     _agents[i] = new RandomAgent(i);
                 }
+                else if(_params.SocialAgents)
+                    _agents[i] = new SocialAgent(i, phenome, CurrentMemorySize);
+                else if(_params.BlondieAgents)
+                    _agents[i] = _params.CreateBlondieAgent(i, phenome);
                 else
-                    _agents[i] = _params.SocialAgents ? new SocialAgent(i, phenome, CurrentMemorySize) : new NeuralAgent(i, phenome);
+                    _agents[i] = new NeuralAgent(i, phenome);
             }
 
             if (_params.SocialAgents)

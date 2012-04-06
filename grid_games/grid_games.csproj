@@ -49,20 +49,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Agent.cs" />
+    <Compile Include="BlondieAgent.cs" />
     <Compile Include="BoardExtensions.cs" />
     <Compile Include="ConnectFour\ConnectFourGame.cs" />
     <Compile Include="GridGame.cs" />
-    <Compile Include="GridGameEvaluator.cs" />
+    <Compile Include="RoundRobinEvaluator.cs" />
     <Compile Include="GridGameExperiment.cs" />
     <Compile Include="GridGameParameters.cs" />
     <Compile Include="IAgent.cs" />
-    <Compile Include="MinimaxBenchmarkEvaluator.cs" />
     <Compile Include="Move.cs" />
     <Compile Include="NeuralAgent.cs" />
     <Compile Include="NumberExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RandomAgent.cs" />
-    <Compile Include="RandomBenchmarkEvaluator.cs" />
+    <Compile Include="BenchmarkEvaluator.cs" />
     <Compile Include="Reversi\ReversiGame.cs" />
     <Compile Include="SocialAgent.cs" />
     <Compile Include="StateActionReward.cs" />

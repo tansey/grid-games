@@ -7,6 +7,8 @@ using grid_games.TicTacToe;
 using grid_games.ConnectFour;
 using grid_games.Reversi;
 using System.Xml.Serialization;
+using SharpNeat.Phenomes;
+using System.Diagnostics;
 
 namespace grid_games
 {
@@ -33,6 +35,9 @@ namespace grid_games
         public string ExperimentPath { get; set; }
         public string ResultsPath { get; set; }
         public string ConfigPath { get; set; }
+        public bool BlondieAgents { get; set; }
+        public string OpponentPath { get; set; }
+        public int MatchesPerOpponent { get; set; }
 
         /// <summary>
         /// Returns a function that creates a new grid game.
@@ -91,6 +96,32 @@ namespace grid_games
             }
         }
 
+        public BlondieAgent CreateBlondieAgent(int id, IBlackBox boardEval)
+        {
+            switch (Game.ToLower())
+            {
+                case "tic-tac-toe":
+                case "tictactoe":
+                case "tic tac toe": return new BlondieAgent(id,
+                    TicTacToeGame.CheckGameOver,
+                    TicTacToeGame.GetValidNextMoves,
+                    boardEval,
+                    this);
+
+                case "connect four":
+                case "connect4":
+                case "connect 4":
+                case "connect-four":
+                case "connect-4":
+                case "connectfour": return new BlondieAgent(id, null, null, boardEval, this);
+
+                case "reversi":
+                case "othello": return new BlondieAgent(id, null, null, boardEval, this);
+                default:
+                    throw new Exception("Unknown game: " + Game);
+            }
+        }
+
         public static GridGameParameters GetParameters(string[] args)
         {
             if (args.Length == 0)
@@ -118,7 +149,11 @@ namespace grid_games
                 Subcultures = 10,
                 GenerationsPerMemoryIncrement = 20,
                 MaxMemorySize = 0,
-                ExperimentPath = "../../../experiments/tictactoe/random/"
+                ExperimentPath = "../../../experiments/tictactoe/random/",
+                BlondieAgents = false,
+                MinimaxDepth = 9,
+                OpponentPath = null,
+                MatchesPerOpponent = 1
             };
 
             gg.ResultsPath = gg.ExperimentPath + gg.Name + "_results.csv";
@@ -314,6 +349,25 @@ namespace grid_games
                         gg.MinimaxDepth = depth;
                         break;
 
+                    case "blondie":
+                        gg.BlondieAgents = true;
+                        break;
+
+                    case "opponent":
+                    case "opp":
+                        gg.OpponentPath = args[++i];
+                        break;
+
+                    case "matches":
+                        int matches;
+                        if (!int.TryParse(args[++i], out matches))
+                        {
+                            Console.WriteLine("Invalid matches per opponent: '{0}'.", args[i]);
+                            return null;
+                        }
+                        gg.MatchesPerOpponent = matches;
+                        break;
+
                     default:
                         Console.WriteLine("Invalid option: '{0}'. Option unknown. Use -help to see options.", args[i].Substring(1));
                         return null;
@@ -332,7 +386,7 @@ namespace grid_games
             Console.WriteLine("-game -g".PadRight(25) + "Name of the game. Valid options: tictactoe, connect4, reversi. Default: tictactoe");
             Console.WriteLine("-inputs -i".PadRight(25) + "Number of inputs for the neural network (usually # of board spaces). Default: 9");
             Console.WriteLine("-outputs -o".PadRight(25) + "Number of outputs for the neural network (usually # of board spaces). Default: 9");
-            Console.WriteLine("-evaluator -eval -e".PadRight(25) + "Evaluation function to use. Valid options: random, roundrobin, minimax. Default: random");
+            Console.WriteLine("-evaluator -eval -e".PadRight(25) + "Evaluation function to use. Valid options: random, roundrobin, minimax, blondie. Default: random");
             Console.WriteLine("-name -n".PadRight(25) + "Name of the experiment.");
             Console.WriteLine("-winreward -win".PadRight(25) + "Reward an agent receives for winning a game. Default: 2");
             Console.WriteLine("-tiereward -tie".PadRight(25) + "Reward an agent receives for tying a game. Default: 1");
@@ -346,7 +400,10 @@ namespace grid_games
             Console.WriteLine("-memoryincrement -meminc".PadRight(25) + "Number of generations between increments of the memory size. Default: 20");
             Console.WriteLine("-maxmemory -maxmem".PadRight(25) + "Maximum size of the memory window for social agents. Default: 0 (unlimited)");
             Console.WriteLine("-dir".PadRight(25) + "Directory to save the experiment output. Default: ../../../experiments/[game]/[eval]");
-            Console.WriteLine("-depth".PadRight(25) + "Maximum search depth for minimax agents. Default: 9");
+            Console.WriteLine("-depth".PadRight(25) + "Maximum search depth for Minimax and Blondie agents. Default: 9");
+            Console.WriteLine("-blondie".PadRight(25) + "Use Blondie24-style agents composed of a neural network board evaluator with minimax. Default: false");
+            Console.WriteLine("-opponent -opp".PadRight(25) + "Location of the opponent to use when evaluating.");
+            Console.WriteLine("-matches".PadRight(25) + "Number of matches to play against each opponent when evaluating agents. Default: 1");
         }
     }
 }

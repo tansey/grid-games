@@ -23,5 +23,9 @@ namespace grid_games
         }
 
         public abstract Move GetMove(int[,] board, bool[,] validNextMoves);
+
+        public virtual void Reset()
+        {
+        }
     }
 }

@@ -80,6 +80,9 @@ namespace grid_games
             ValidNextMoves = new bool[_rows, _columns];
             ActingPlayer = _startingPlayer;
 
+            Hero.Reset();
+            Villain.Reset();
+
             Hero.PlayerId = 1;
             Villain.PlayerId = -1;
         }
