@@ -44,7 +44,7 @@ namespace AgentBenchmark
                 Game = args[0],
                 Inputs = int.Parse(args[1]),
                 Outputs = int.Parse(args[2]),
-                Evaluator = args[4],
+                Evaluator = args[3],
                 WinReward = 2,
                 TieReward = 1,
                 LossReward = 0,
