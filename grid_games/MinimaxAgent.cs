@@ -47,33 +47,35 @@ namespace grid_games
             {
                 if (win == PlayerId)
                 {
-                    board.DrawBoard();
-                    Console.WriteLine("Reward: {0}", _params.WinReward);
+                    //board.DrawBoard();
+                    //Console.WriteLine("Reward: {0}", _params.WinReward);
                     return new ScoredMove(0, 0, _params.WinReward);
                 }
                 else if (win == 0)
                 {
-                    board.DrawBoard();
-                    Console.WriteLine("Reward: {0}", _params.TieReward);
+                    //board.DrawBoard();
+                    //Console.WriteLine("Reward: {0}", _params.TieReward);
                     return new ScoredMove(0, 0, _params.TieReward);
                 }
                 else
                 {
-                    board.DrawBoard();
-                    Console.WriteLine("Reward: {0}", _params.LossReward);
+                    //board.DrawBoard();
+                    //Console.WriteLine("Reward: {0}", _params.LossReward);
                     return new ScoredMove(0, 0, _params.LossReward);
                 }
             }
 
             if (depth == 0)
             {
-                board.DrawBoard();
-                Console.WriteLine("Reward: {0}", _params.LossReward);
+                //board.DrawBoard();
+                //Console.WriteLine("Reward: {0}", _params.LossReward);
                 return new ScoredMove(0, 0, _boardEval(board, player));
             }
-
-
+			
 			double alpha = double.MinValue;
+			if (player != PlayerId)
+				alpha = double.MaxValue;
+
 			ScoredMove nextMove = null;
 			for (int i = 0; i < board.GetLength(0); i++){
 				for (int j = 0; j < board.GetLength(1); j++) {
@@ -96,16 +98,31 @@ namespace grid_games
                     board[i, j] = prev;
 
                     // If we found a win, return this move.
-                    if (move.Score == _params.WinReward)
-                        return new ScoredMove(i, j, _params.WinReward);
+					if (player == PlayerId){
+                    	if (move.Score == _params.WinReward)
+                        	return new ScoredMove(i, j, _params.WinReward);
 
-                    // If we found a new highest-scoring branch,
-                    // set it as the current best.
-					if (move.Score > alpha)
-					{
-						alpha = move.Score;
-						nextMove = new ScoredMove(i, j, alpha);
+                    	// If we found a new highest-scoring branch,
+                    	// set it as the current best.
+						if (move.Score > alpha)
+						{
+							alpha = move.Score;
+							nextMove = new ScoredMove(i, j, alpha);
+						}
 					}
+					else {
+                    	if (move.Score == _params.LossReward)
+                        	return new ScoredMove(i, j, _params.LossReward);
+
+                    	// If we found a new highest-scoring branch,
+                    	// set it as the current best.
+						if (move.Score < alpha)
+						{
+							alpha = move.Score;
+							nextMove = new ScoredMove(i, j, alpha);
+						}
+					}
+					
 					
 				}
 			}
