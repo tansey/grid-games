@@ -35,8 +35,9 @@ namespace grid_games
         public string ExperimentPath { get; set; }
         public string ResultsPath { get; set; }
         public string ConfigPath { get; set; }
-        public bool BlondieAgents { get; set; }
+        public string ChampionPath { get; set; }
         public string OpponentPath { get; set; }
+        public bool BlondieAgents { get; set; }
         public int MatchesPerOpponent { get; set; }
 
         /// <summary>
@@ -158,6 +159,7 @@ namespace grid_games
 
             gg.ResultsPath = gg.ExperimentPath + gg.Name + "_results.csv";
             gg.ConfigPath = gg.ExperimentPath + gg.Name + "_config.xml";
+            gg.ChampionPath = gg.ExperimentPath + gg.Name + "_champion.xml";
 
 
             for (int i = 1; i < args.Length; i++)
@@ -337,6 +339,7 @@ namespace grid_games
                         gg.ExperimentPath = dir;
                         gg.ResultsPath = gg.ExperimentPath + gg.Name + "_results.csv";
                         gg.ConfigPath = gg.ExperimentPath + gg.Name + "_config.xml";
+                        gg.ChampionPath = gg.ExperimentPath + gg.Name + "_champion.xml";
 
                         break;
 
