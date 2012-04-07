@@ -60,22 +60,7 @@ namespace grid_games
                 CurrentMemorySize++;
         }
 
-        private void observeWinner(int winnerIdx)
-        {
-            if (!_params.SocialAgents)
-                return;
-
-            var observation = ((SocialAgent)_agents[winnerIdx]).Memory;
-            for (int i = 0; i < _agents.Length; i++)
-            {
-                // Do not train yourself or anyone outside your subculture
-                if (i == winnerIdx || _subcultures[i] != _subcultures[winnerIdx])
-                    continue;
-
-                var observer = (SocialAgent)_agents[i];
-                observer.LearnFromObservation(observation);
-            }
-        }
+        
 
         protected virtual void evaluateAgents()
         {
@@ -88,6 +73,7 @@ namespace grid_games
             for (int heroIdx = 0; heroIdx < _agents.Length; heroIdx++)
                 for (int villainIdx = 0; villainIdx < _agents.Length; villainIdx++)
                 {
+                    Console.WriteLine("{0} vs. {1}", heroIdx, villainIdx);
                     if (heroIdx == villainIdx)
                         continue;
 
@@ -101,6 +87,17 @@ namespace grid_games
                 _genomeList[i].EvaluationInfo.SetFitness(scores[i]);
                 _genomeList[i].EvaluationInfo.AlternativeFitness = scores[i];
             }
+        }
+
+        protected int evaluate(IAgent hero, IAgent villain)
+        {
+            GridGame game = _params.GameFunction(hero, villain);
+
+            game.PlayToEnd();
+
+            _evaluationCount++;
+
+            return game.Winner;
         }
 
         private void updateScores(double[] scores, int heroIdx, int villainIdx, int winner)
@@ -124,18 +121,24 @@ namespace grid_games
             }
         }
 
-        
 
-        protected int evaluate(IAgent hero, IAgent villain)
+        private void observeWinner(int winnerIdx)
         {
-            GridGame game = _params.GameFunction(hero, villain);
+            if (!_params.SocialAgents)
+                return;
 
-            game.PlayToEnd();
+            var observation = ((SocialAgent)_agents[winnerIdx]).Memory;
+            for (int i = 0; i < _agents.Length; i++)
+            {
+                // Do not train yourself or anyone outside your subculture
+                if (i == winnerIdx || _subcultures[i] != _subcultures[winnerIdx])
+                    continue;
 
-            _evaluationCount++;
-
-            return game.Winner;
+                var observer = (SocialAgent)_agents[i];
+                observer.LearnFromObservation(observation);
+            }
         }
+        
 
         private void createAgents(IList<TGenome> genomeList)
         {

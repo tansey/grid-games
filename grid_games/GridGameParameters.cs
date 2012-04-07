@@ -88,10 +88,18 @@ namespace grid_games
                 case "connect 4":
                 case "connect-four":
                 case "connect-4":
-                case "connectfour": return new MinimaxAgent(id, null, null, null, this);
+                case "connectfour": return new MinimaxAgent(id, 
+                    ConnectFourGame.CheckGameOver, 
+                    ConnectFourGame.GetValidNextMoves, 
+                    ConnectFourGame.EvaluateBoard, 
+                    this);
 
                 case "reversi":
-                case "othello": return new MinimaxAgent(id, null, null, null, this);
+                case "othello": return new MinimaxAgent(id, 
+                    ReversiGame.CheckGameOver, 
+                    ReversiGame.GetValidNextMoves, 
+                    ReversiGame.EvaluateBoard, 
+                    this);
                 default:
                     throw new Exception("Unknown game: " + Game);
             }
@@ -114,10 +122,18 @@ namespace grid_games
                 case "connect 4":
                 case "connect-four":
                 case "connect-4":
-                case "connectfour": return new BlondieAgent(id, null, null, boardEval, this);
+                case "connectfour": return new BlondieAgent(id, 
+                    ConnectFourGame.CheckGameOver, 
+                    ConnectFourGame.GetValidNextMoves, 
+                    boardEval, 
+                    this);
 
                 case "reversi":
-                case "othello": return new BlondieAgent(id, null, null, boardEval, this);
+                case "othello": return new BlondieAgent(id, 
+                    ReversiGame.CheckGameOver, 
+                    ReversiGame.GetValidNextMoves, 
+                    boardEval, 
+                    this);
                 default:
                     throw new Exception("Unknown game: " + Game);
             }

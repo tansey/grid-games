@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridGameParameters xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Game>connect4</Game>
+  <Name>blondie_4ply</Name>
+  <Description />
+  <WinReward>2</WinReward>
+  <LossReward>0</LossReward>
+  <TieReward>1</TieReward>
+  <PopulationSize>100</PopulationSize>
+  <Inputs>42</Inputs>
+  <Outputs>1</Outputs>
+  <Species>10</Species>
+  <Subcultures>10</Subcultures>
+  <Generations>500</Generations>
+  <Evaluator>coevolve</Evaluator>
+  <GenerationsPerMemoryIncrement>20</GenerationsPerMemoryIncrement>
+  <MaxMemorySize>0</MaxMemorySize>
+  <SocialAgents>false</SocialAgents>
+  <LamarckianEvolution>false</LamarckianEvolution>
+  <MinimaxDepth>4</MinimaxDepth>
+  <ExperimentPath>../../../experiments/blondie/connectfour/</ExperimentPath>
+  <ResultsPath>../../../experiments/blondie/connectfour/blondie_4ply_results.csv</ResultsPath>
+  <ConfigPath>../../../experiments/blondie/connectfour/blondie_4ply_config.xml</ConfigPath>
+  <ChampionPath>../../../experiments/blondie/connectfour/blondie_4ply_champion.xml</ChampionPath>
+  <BlondieAgents>true</BlondieAgents>
+  <MatchesPerOpponent>1</MatchesPerOpponent>
+</GridGameParameters>

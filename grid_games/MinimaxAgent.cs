@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using grid_games;
 using System.IO;
+using System.Diagnostics;
 namespace grid_games
 {
     /// <summary>
@@ -27,6 +28,8 @@ namespace grid_games
             BoardEval eval,
             GridGameParameters parameters) : base(id)
         {
+            Debug.Assert(parameters != null);
+
             _checkGameOver = check;
             _validNextMoves = valid;
             _boardEval = eval;
@@ -43,10 +46,8 @@ namespace grid_games
                 return move.Move;
             }
         }
-		
-		
+
 		public ScoredMove MiniMax(int[,] board, bool[,] validNextMoves, int depth, int player, string padding){
-            
             //board.SaveBoard(writer, padding);
             //board.PrintBoard(padding);
             

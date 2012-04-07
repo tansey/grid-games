@@ -22,9 +22,9 @@ namespace grid_games
         public IAgent Villain { get; set; }
 
 
-        public delegate void AgentMovedHandler(GridGame game, int player, Move m);
+        public delegate void AgentMovedHandler(GridGame game, int movingPlayer, int currentPlayer, Move m);
         public event AgentMovedHandler AgentMoved;
-        public delegate void AgentPassedHandler(GridGame game, int player);
+        public delegate void AgentPassedHandler(GridGame game, int passingPlayer, int currentPlayer);
         public event AgentPassedHandler AgentPassed;
 
 
@@ -44,15 +44,17 @@ namespace grid_games
 
         public virtual void PlayToEnd()
         {
+            int moveNum = 0;
             while (!GameOver)
             {
+                moveNum++;
                 IAgent player = ActingPlayer == HERO_ID ? Hero : Villain;
 
                 if (!HasValidMove())
                 {
                     ActingPlayer *= -1;
                     if(AgentPassed != null)
-                        AgentPassed(this, ActingPlayer);
+                        AgentPassed(this, ActingPlayer * -1, ActingPlayer);
                     continue;
                 }
 
@@ -60,10 +62,10 @@ namespace grid_games
 
                 Move(m.Row, m.Column);
 
-                if (AgentMoved != null)
-                    AgentMoved(this, ActingPlayer, m);
-
                 ActingPlayer *= -1;
+
+                if (AgentMoved != null)
+                    AgentMoved(this, ActingPlayer * -1, ActingPlayer, m);
             }
         }
         

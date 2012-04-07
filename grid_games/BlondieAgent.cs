@@ -32,6 +32,7 @@ namespace grid_games
 
         public override Move GetMove(int[,] board, bool[,] validNextMoves)
         {
+            _minimax.PlayerId = PlayerId;
             return _minimax.GetMove(board, validNextMoves);
         }
 
@@ -44,13 +45,19 @@ namespace grid_games
             // Clear the network
             Brain.ResetState();
 
+            // Console.WriteLine("player: {0}", player);
             // Set the board state as the inputs
             for (int i = 0; i < board.GetLength(0); i++)
                 for (int j = 0; j < board.GetLength(1); j++)
-                    Brain.InputSignalArray[i * board.GetLength(0) + j] = board[i, j].toBoardSensor(PlayerId);
+                {
+                    //Console.WriteLine("[{0},{1}]={2}", i, j, board[i, j].toBoardSensor(player));
+                    Brain.InputSignalArray[i * board.GetLength(0) + j] = board[i, j].toBoardSensor(player);
+                }
 
             // Activate the network
             Brain.Activate();
+
+            //Console.WriteLine("{0}: {1}", AgentId, Brain.OutputSignalArray[0]);
 
             // Return the value of the board
             return Brain.OutputSignalArray[0] * _params.WinReward;

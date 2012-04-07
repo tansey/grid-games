@@ -16,10 +16,8 @@ namespace grid_games.TicTacToe
             this.AgentMoved += new AgentMovedHandler(checkGameOver);
         }
 
-        void checkGameOver(GridGame game, int player, Move m)
+        void checkGameOver(GridGame game, int movingPlayer, int curPlayer, Move m)
         {
-            var Board = game.Board;
-
             int winner;
             GameOver = CheckGameOver(Board, out winner);
 

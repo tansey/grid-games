@@ -14,16 +14,15 @@ namespace grid_games.Reversi
             this.AgentPassed += new AgentPassedHandler(agentPassed);
         }
 
-        void agentPassed(GridGame game, int player)
+        void agentPassed(GridGame game, int movingPlayer, int curPlayer)
         {
-			//Console.WriteLine("No Valid Moves for player {0}", ActingPlayer);
             setValidNextMoves();
         }
 
-        void flipPiecesAndCheckGameOver(GridGame game, int player, Move m)
+        void flipPiecesAndCheckGameOver(GridGame game, int movingPlayer, int curPlayer, Move m)
         {
-            flipPieces(game, player, m);
-            checkGameOver(game, player, m);
+            flipPieces(game, movingPlayer, m);
+            checkGameOver(game, movingPlayer, m);
 			setValidNextMoves();
         }
 
@@ -32,10 +31,10 @@ namespace grid_games.Reversi
 			//Console.WriteLine("Flip {0}, {1}", m.Column, m.Row);
             int i = m.Row;
 			int j = m.Column;
-			//Board[m.Column, m.Row] = ActingPlayer;
+			//board[m.Column, m.Row] = ActingPlayer;
 			for (int k = -1; k < 2; k++)
 				for (int l = -1; l < 2; l++)
-					if (validDirection(i,j,k,l, ActingPlayer, Board))
+					if (validDirection(i,j,k,l, player, Board))
 				{
 					//Console.WriteLine("{0}, {1}", m.Column, m.Row);
 						flipTokens(i,j,k,l);
@@ -114,7 +113,11 @@ namespace grid_games.Reversi
         {
 			int winner;
 			GameOver = CheckGameOver(game.Board, out winner);
-			Winner = winner;
+			
+            if(GameOver)
+                Winner = winner;
+
+            setValidNextMoves();
         }
 		
 		static bool oneRemainingPlayer(int[,] board){

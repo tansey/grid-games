@@ -1,0 +1,60 @@
+<Root>
+  <ActivationFunctions>
+    <Fn id="0" name="PlainSigmoid" prob="1" />
+  </ActivationFunctions>
+  <Networks>
+    <Network id="20" birthGen="0" fitness="315">
+      <Nodes>
+        <Node type="bias" id="0" fnId="0" />
+        <Node type="in" id="1" fnId="0" />
+        <Node type="in" id="2" fnId="0" />
+        <Node type="in" id="3" fnId="0" />
+        <Node type="in" id="4" fnId="0" />
+        <Node type="in" id="5" fnId="0" />
+        <Node type="in" id="6" fnId="0" />
+        <Node type="in" id="7" fnId="0" />
+        <Node type="in" id="8" fnId="0" />
+        <Node type="in" id="9" fnId="0" />
+        <Node type="in" id="10" fnId="0" />
+        <Node type="in" id="11" fnId="0" />
+        <Node type="in" id="12" fnId="0" />
+        <Node type="in" id="13" fnId="0" />
+        <Node type="in" id="14" fnId="0" />
+        <Node type="in" id="15" fnId="0" />
+        <Node type="in" id="16" fnId="0" />
+        <Node type="in" id="17" fnId="0" />
+        <Node type="in" id="18" fnId="0" />
+        <Node type="in" id="19" fnId="0" />
+        <Node type="in" id="20" fnId="0" />
+        <Node type="in" id="21" fnId="0" />
+        <Node type="in" id="22" fnId="0" />
+        <Node type="in" id="23" fnId="0" />
+        <Node type="in" id="24" fnId="0" />
+        <Node type="in" id="25" fnId="0" />
+        <Node type="in" id="26" fnId="0" />
+        <Node type="in" id="27" fnId="0" />
+        <Node type="in" id="28" fnId="0" />
+        <Node type="in" id="29" fnId="0" />
+        <Node type="in" id="30" fnId="0" />
+        <Node type="in" id="31" fnId="0" />
+        <Node type="in" id="32" fnId="0" />
+        <Node type="in" id="33" fnId="0" />
+        <Node type="in" id="34" fnId="0" />
+        <Node type="in" id="35" fnId="0" />
+        <Node type="in" id="36" fnId="0" />
+        <Node type="in" id="37" fnId="0" />
+        <Node type="in" id="38" fnId="0" />
+        <Node type="in" id="39" fnId="0" />
+        <Node type="in" id="40" fnId="0" />
+        <Node type="in" id="41" fnId="0" />
+        <Node type="in" id="42" fnId="0" />
+        <Node type="out" id="43" fnId="0" />
+      </Nodes>
+      <Connections>
+        <Con id="46" src="2" tgt="43" wght="4.2661715811118484" />
+        <Con id="70" src="26" tgt="43" wght="-4.4021850498393178" />
+        <Con id="83" src="39" tgt="43" wght="-4.7374121146276593" />
+      </Connections>
+    </Network>
+  </Networks>
+</Root>
