@@ -141,6 +141,14 @@ namespace grid_games
 					
 				}
 			}
+			
+			if (nextMove == null)
+			{
+				Console.WriteLine("Allo!");
+				_validNextMoves(board, oppValidMoves, player * -1);
+				return MiniMax(board, oppValidMoves, depth, player * -1, padding + " + ");
+				
+			}
 
             // Return the best move we found.
 			return nextMove;

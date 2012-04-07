@@ -181,7 +181,19 @@ namespace grid_games.Reversi
 		public static bool CheckGameOver(int[,] Board, out int winner)
         {	
 			winner = 0;
-			if (oneRemainingPlayer(Board) || !Board.HasEmptyCell() ){
+			bool[,] validMove = new bool[8,8];
+			GetValidNextMoves(Board, validMove, 1);
+			for (int i = 0; i < 8; i++)
+				for (int j = 0; j <8; j++)
+					if (validMove[i,j])
+						return false;
+			
+			GetValidNextMoves(Board, validMove, -1);
+			for (int i = 0; i < 8; i++)
+				for (int j = 0; j <8; j++)
+					if (validMove[i,j])
+						return false;
+			
 			int sum = 0;			
 			for (int i = 0; i < 8; i++)
                 for (int j = 0; j < 8; j++)
@@ -190,9 +202,9 @@ namespace grid_games.Reversi
 				winner = -1;
 			if (sum > 0)
 				winner = 1;
-				return true;
-			}
-			return false;
+			return true;
+
+			//return false;
         }
 
         public static double EvaluateBoard(int[,] board, int player)
