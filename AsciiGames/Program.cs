@@ -60,19 +60,19 @@ namespace AsciiGames
 
                 game.Board.PrintBoard();
 
-                AnnounceWinner(game);
+                AnnounceWinner(game, player1);
 
             } while (getOption("Play again (y/n)? ", "y", "n") == "y");
         }
 
-        private static void AnnounceWinner(GridGame game)
+        private static void AnnounceWinner(GridGame game, bool player1)
         {
-            if (game.Winner == 1)
-                Console.WriteLine("You won!");
-            else if (game.Winner == -1)
-                Console.WriteLine("You lost. :(");
-            else
+            if (game.Winner == 0)
                 Console.WriteLine("You tied.");
+            else if(game.Winner == 1 || !player1)
+                Console.WriteLine("You won!");
+            else
+                Console.WriteLine("You lost. :(");
         }
 
         private static GridGame CreateGame(string gameName, bool player1, IAgent opponent)
