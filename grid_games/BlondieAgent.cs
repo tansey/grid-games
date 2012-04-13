@@ -50,7 +50,7 @@ namespace grid_games
             for (int i = 0; i < board.GetLength(0); i++)
                 for (int j = 0; j < board.GetLength(1); j++)
                 {
-                    //Console.WriteLine("[{0},{1}]={2}", i, j, board[i, j].toBoardSensor(player));
+                    //Console.WriteLine("[{0},{1}]={2}", pieceX, pieceY, board[pieceX, pieceY].toBoardSensor(player));
                     Brain.InputSignalArray[i * board.GetLength(0) + j] = board[i, j].toBoardSensor(player);
                 }
 

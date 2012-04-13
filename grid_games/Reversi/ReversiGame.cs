@@ -27,17 +27,12 @@ namespace grid_games.Reversi
 
         static void flipPieces(GridGame game, int player, Move m, int[,] board)
         {
-			//Console.WriteLine("Flip {0}, {1}", m.Column, m.Row);
-            int i = m.Row;
-			int j = m.Column;
-			//board[m.Column, m.Row] = ActingPlayer;
-			for (int k = -1; k < 2; k++)
-				for (int l = -1; l < 2; l++)
-					if (ValidDirection(i,j,k,l, player, board))
-				{
-					//Console.WriteLine("{0}, {1}", m.Column, m.Row);
-						FlipTokens(i,j,k,l, player, board);
-				}
+            // Explore every possible direction for potential flips
+			for (int xDir = -1; xDir < 2; xDir++)
+				for (int yDir = -1; yDir < 2; yDir++)
+                    if (ValidDirection(m.Row, m.Column, xDir, yDir, player, board))
+                        FlipTokens(m.Row, m.Column, xDir, yDir, player, board);
+
         }
 
         void checkGameOver(GridGame game, int player, Move m)
@@ -52,27 +47,27 @@ namespace grid_games.Reversi
         }
 		
 		//prerequisite: this is a valid direction
-		static void FlipTokens(int i, int j, int k, int l, int player, int[,] board){
-			//Console.WriteLine("{0}, {1}", i, j);
-			int iidx = i;
-			int jidx = j;
+		static void FlipTokens(int pieceX, int pieceY, int xStep, int yStep, int player, int[,] board){
+			//Console.WriteLine("{0}, {1}", pieceX, pieceY);
+			int xIdx = pieceX;
+			int yIdx = pieceY;
 			bool opponent_found = false;
 			bool valid_space = true;
 			
 			do{
 				// move in the right direction	
-				iidx += k;
-				jidx += l;
+				xIdx += xStep;
+				yIdx += yStep;
 				
 				// make sure we haven't gone off the board
-				valid_space = (iidx >= 0 && iidx < 8 && jidx >= 0 && jidx < 8);
+				valid_space = (xIdx >= 0 && xIdx < 8 && yIdx >= 0 && yIdx < 8);
 				if (valid_space)
-                    opponent_found = board[iidx, jidx] == player * -1;
+                    opponent_found = board[xIdx, yIdx] == player * -1;
 				else
 					opponent_found = false;
 				// did we find an opponent's piece? flip it!
 				if (opponent_found)
-                    board[iidx, jidx] = player;
+                    board[xIdx, yIdx] = player;
 					
 				// we keep going as long as they have pieces
 			} while (valid_space && opponent_found);										
@@ -111,7 +106,7 @@ namespace grid_games.Reversi
 			if (opponent_ever_found){
                 if (valid_space && board[iidx, jidx] == player)
                 {
-					//Console.WriteLine("{0},{1}",iidx, jidx
+					//Console.WriteLine("{0},{1}",xIdx, yIdx
 					return true;
 				}
 			}
