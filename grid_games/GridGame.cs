@@ -8,8 +8,8 @@ namespace grid_games
 {
     public abstract class GridGame
     {
-        const int HERO_ID = 1;
-        const int VILLAIN_ID = -1;
+        public const int HERO_ID = 1;
+        public const int VILLAIN_ID = -1;
 
         private int _rows, _columns, _startingPlayer;
 

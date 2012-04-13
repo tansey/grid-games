@@ -36,7 +36,7 @@ namespace grid_games
             return _minimax.GetMove(board, validNextMoves);
         }
 
-        public double Evaluate(int[,] board, int player)
+        public double Evaluate(int[,] board, GridGameParameters ggp, int player)
         {
             // ANN should map from board squares to a single value
             Debug.Assert(Brain.InputCount == board.Length);

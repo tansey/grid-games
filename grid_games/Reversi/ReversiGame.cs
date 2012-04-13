@@ -203,13 +203,13 @@ namespace grid_games.Reversi
 			//return false;
         }
 
-        public static double EvaluateBoard(int[,] board, int player)
+        public static double EvaluateBoard(int[,] board, GridGameParameters ggp, int player)
         {
             int sum = 0;
 			for (int i = 0; i < 8; i++)
 				for (int j = 0; j < 8; j++)
-					sum += board[i,j];
-            return sum * player; 
+					sum += board[i,j] == player ? 1 : -1;
+            return (sum + 64) / 128.0 * ggp.TieReward;
         }
 	
 					

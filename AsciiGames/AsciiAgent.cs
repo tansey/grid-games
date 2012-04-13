@@ -32,7 +32,9 @@ namespace AsciiGames
             Console.Write("Your move? ");
             string input = Console.ReadLine();
             int[] move = tryParseInput(input);
-            if (!validNextMoves[move[0], move[1]])
+            if (move[0] >= validNextMoves.GetLength(0) || move[0] < 0 
+                || move[1] >= validNextMoves.GetLength(1) || move[1] < 0 
+                || !validNextMoves[move[0], move[1]])
                 move = null;
             while (move == null)
             {

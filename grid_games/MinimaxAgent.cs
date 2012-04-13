@@ -14,7 +14,7 @@ namespace grid_games
     {
         public delegate bool CheckGameOver(int[,] Board, out int winner);
         public delegate void GetValidNextMoves(int[,] board, bool[,] validNextMoves, int player);
-        public delegate double BoardEval(int[,] board, int player);
+        public delegate double BoardEval(int[,] board, GridGameParameters ggp, int player);
 
         CheckGameOver _checkGameOver;
         GetValidNextMoves _validNextMoves;
@@ -80,10 +80,10 @@ namespace grid_games
 
             if (depth == 0)
             {
-                //Console.WriteLine("{0}Reward: {1}", padding, _params.LossReward);
+                //Console.WriteLine("{0} Depth exceeded. Reward: {1}", padding, _boardEval(board, _params, player));
                 //Console.WriteLine();
                 //Console.WriteLine();
-                return new ScoredMove(0, 0, _boardEval(board, player));
+                return new ScoredMove(0, 0, _boardEval(board, _params, player));
             }
 			
 			double alpha = double.MinValue;
@@ -96,13 +96,13 @@ namespace grid_games
 				for (int j = 0; j < board.GetLength(1); j++) {
                     
                     // Only try valid next moves.
-					if (!validNextMoves[i,j])
+                    if (!validNextMoves[i, j])
                         continue;
 
                     // Try moving here
                     int prev = board[i, j];
                     board[i, j] = player;
-
+                    
                     // Update the valid moves for the next player
                     _validNextMoves(board, oppValidMoves, player * -1);
 
@@ -116,10 +116,10 @@ namespace grid_games
 					if (player == PlayerId){
                         if (move.Score == _params.WinReward)
                             return new ScoredMove(i, j, _params.WinReward);
-
-                    	// If we found a new highest-scoring branch,
+                    	
+                        // If we found a new highest-scoring branch,
                     	// set it as the current best.
-						if (move.Score > alpha)
+						if (nextMove == null || move.Score > alpha)
 						{
 							alpha = move.Score;
 							nextMove = new ScoredMove(i, j, alpha);
@@ -128,10 +128,10 @@ namespace grid_games
 					else {
                         if (move.Score == _params.LossReward)
                             return new ScoredMove(i, j, _params.LossReward);
-
-                    	// If we found a new highest-scoring branch,
+                    	
+                        // If we found a new highest-scoring branch,
                     	// set it as the current best.
-						if (move.Score < alpha)
+						if (nextMove == null || move.Score < alpha)
 						{
 							alpha = move.Score;
 							nextMove = new ScoredMove(i, j, alpha);
@@ -144,10 +144,8 @@ namespace grid_games
 			
 			if (nextMove == null)
 			{
-				Console.WriteLine("Allo!");
 				_validNextMoves(board, oppValidMoves, player * -1);
-				return MiniMax(board, oppValidMoves, depth, player * -1, padding + " + ");
-				
+				return MiniMax(board, oppValidMoves, depth - 1, player * -1, padding + " + ");
 			}
 
             // Return the best move we found.
