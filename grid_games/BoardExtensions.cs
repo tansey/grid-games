@@ -20,18 +20,23 @@ namespace grid_games
         public static void PrintBoard(this int[,] board, string padding = "")
         {
             StringBuilder sb = new StringBuilder();
+            sb.Append(padding + "  ");
+            for (int row = 0; row < board.GetLength(0); row++)
+                sb.Append("  " + row + " ");
+            sb.AppendLine();
             for (int col = board.GetLength(1) - 1; col >= 0; col--)
             {
-                sb.Append(padding);
+                sb.Append(padding + "  ");
                 for (int row = 0; row < board.GetLength(0); row++)
                     sb.Append("----");
                 sb.AppendLine("-");
+                sb.Append(col + " ");
                 sb.Append(padding);
                 for (int row = 0; row < board.GetLength(0); row++)
                     sb.Append(string.Format("| {0} ", board[row, col] == 1 ? "X" : board[row, col] == -1 ? "O" : " "));
                 sb.AppendLine("|");
             }
-            sb.Append(padding);
+            sb.Append(padding + "  ");
             for (int col = 0; col < board.GetLength(0); col++)
                 sb.Append("----");
             sb.AppendLine("-");

@@ -41,6 +41,7 @@ namespace grid_games
         public int MatchesPerOpponent { get; set; }
         public int MonteCarloTrials { get; set; }
         public int MinMcTrialsPerMove { get; set; }
+        public double UctConst { get; set; }
 
         /// <summary>
         /// Returns a function that creates a new grid game.
@@ -420,6 +421,16 @@ namespace grid_games
                         }
                         gg.MinMcTrialsPerMove = mintrials;
                         break;
+
+                    case "uctconst":
+                        double uctConst;
+                        if (!double.TryParse(args[++i], out uctConst))
+                        {
+                            Console.WriteLine("Invalid UCT const: '{0}'.", args[i]);
+                            return null;
+                        }
+                        gg.UctConst = uctConst;
+                        break;
                     default:
                         Console.WriteLine("Invalid option: '{0}'. Option unknown. Use -help to see options.", args[i].Substring(1));
                         return null;
@@ -457,7 +468,8 @@ namespace grid_games
                 OpponentPath = null,
                 MatchesPerOpponent = 1,
                 MonteCarloTrials = 1000,
-                MinMcTrialsPerMove = 1
+                MinMcTrialsPerMove = 1,
+                UctConst = 0.5
             };
 
             gg.ResultsPath = gg.ExperimentPath + gg.Name + "_results.csv";
@@ -494,6 +506,7 @@ namespace grid_games
             Console.WriteLine("-matches".PadRight(25) + "Number of matches to play against each opponent when evaluating agents. Default: 1");
             Console.WriteLine("-mctrials".PadRight(25) + "Number of monte carlo trials per move for a MCTS agent. Default: 1000");
             Console.WriteLine("-mintrials".PadRight(25) + "Minimum number of monte carlo trials per possible move for a MCTS agent. Default: 1");
+            Console.WriteLine("-uctconst".PadRight(25) + "Constant multiplier for the UCT update equation. Default: 0.5");
         }
     }
 }

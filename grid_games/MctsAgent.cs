@@ -77,7 +77,7 @@ namespace grid_games
         private MctsMove selectBestCandidate(List<MctsMove> candidates)
         {
             int totalTrials = candidates.Sum(m => m.Trials);
-            return candidates.ArgMax(m => m.Score(0.5, totalTrials));
+            return candidates.ArgMax(m => m.Score(_params.UctConst, totalTrials));
         }
         
         private int playRandomGame(int[,] board, int player)
