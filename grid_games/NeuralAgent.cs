@@ -22,10 +22,15 @@ namespace grid_games
             Brain.ResetState();
 
             // Set the board state as the inputs
-            for (int i = 0; i < board.GetLength(0); i++)
+			//Console.WriteLine("Height: {0}, Width: {1}, Brain: {2}", 
+			//                  board.GetLength(0), board.GetLength(1), Brain.InputSignalArray.Length);
+            
+			for (int i = 0; i < board.GetLength(0); i++)
                 for (int j = 0; j < board.GetLength(1); j++)
-                    Brain.InputSignalArray[i * board.GetLength(0) + j] = board[i, j].toBoardSensor(PlayerId);
-
+			{
+				
+                    Brain.InputSignalArray[i * board.GetLength(1) + j] = board[i, j].toBoardSensor(PlayerId);
+			}
             // Activate the network
             Brain.Activate();
 
@@ -38,12 +43,13 @@ namespace grid_games
             for (int i = 0; i < board.GetLength(0); i++)
                 for (int j = 0; j < board.GetLength(1); j++)
                 {
+            
                     // Only look at output neurons for valid moves
                     if (!validNextMoves[i, j])
                         continue;
 
                     // Get the activation of the neuron for this spot on the board
-                    double val = Brain.OutputSignalArray[i * board.GetLength(0) + j];
+                    double val = Brain.OutputSignalArray[i * board.GetLength(1) + j];
 
                     // If this activation is the highest so far, it's the current move
                     if (maxRow == -1 || val > maxVal)
