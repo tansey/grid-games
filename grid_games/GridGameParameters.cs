@@ -42,6 +42,7 @@ namespace grid_games
         public int MonteCarloTrials { get; set; }
         public int MinMcTrialsPerMove { get; set; }
         public double UctConst { get; set; }
+        public bool HyperNeat { get; set; }
 
         /// <summary>
         /// Returns a function that creates a new grid game.
@@ -431,6 +432,9 @@ namespace grid_games
                         }
                         gg.UctConst = uctConst;
                         break;
+                    case "hyperneat":
+                        gg.HyperNeat = true;
+                        break;
                     default:
                         Console.WriteLine("Invalid option: '{0}'. Option unknown. Use -help to see options.", args[i].Substring(1));
                         return null;
@@ -468,7 +472,8 @@ namespace grid_games
                 MatchesPerOpponent = 1,
                 MonteCarloTrials = 1000,
                 MinMcTrialsPerMove = 1,
-                UctConst = 0.5
+                UctConst = 0.5,
+                HyperNeat = false
             };
 
             gg.ResultsPath = gg.ExperimentPath + gg.Name + "_results.csv";
@@ -506,6 +511,7 @@ namespace grid_games
             Console.WriteLine("-mctrials".PadRight(25) + "Number of monte carlo trials per move for a MCTS agent. Default: 1000");
             Console.WriteLine("-mintrials".PadRight(25) + "Minimum number of monte carlo trials per possible move for a MCTS agent. Default: 1");
             Console.WriteLine("-uctconst".PadRight(25) + "Constant multiplier for the UCT update equation. Default: 0.5");
+            Console.WriteLine("-hyperneat".PadRight(25) + "Use HyperNEAT for the agents. Default: false");
         }
     }
 }

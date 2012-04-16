@@ -17,6 +17,7 @@ using SharpNeat.EvolutionAlgorithms.ComplexityRegulation;
 using SharpNeat.Phenomes;
 using SharpNeat.Decoders.Neat;
 using SharpNeat.Decoders;
+using SharpNeat.Decoders.HyperNeat;
 
 namespace grid_games
 {
@@ -167,9 +168,81 @@ namespace grid_games
         /// </summary>
         public IGenomeDecoder<NeatGenome, IBlackBox> CreateGenomeDecoder()
         {
+            if (Parameters.HyperNeat)
+                return CreateHyperNeatGenomeDecoder();
+
             NetworkActivationScheme activationScheme = NetworkActivationScheme.CreateCyclicFixedTimestepsScheme(4);
 
             return new NeatGenomeDecoder(activationScheme);
+        }
+
+        /// <summary>
+        /// Creates a new HyperNEAT genome decoder that can be used to convert
+        /// a genome into a phenome.
+        /// </summary>
+        public IGenomeDecoder<NeatGenome, IBlackBox> CreateHyperNeatGenomeDecoder()
+        {
+
+            var game = Parameters.GameFunction(null, null);
+            int xTotal = game.Board.GetLength(0);
+            int yTotal = game.Board.GetLength(1);
+
+            // Create an input and an output layer for the HyperNEAT
+            // substrate. Each layer corresponds to the game board
+            // with 9 squares.
+            SubstrateNodeSet inputLayer = new SubstrateNodeSet(Parameters.Inputs);
+            SubstrateNodeSet outputLayer = new SubstrateNodeSet(Parameters.Outputs);
+
+            // Each node in each layer needs a unique ID.
+            uint uid = 1;
+
+            // The game board is represented as a 2-dimensional plane.
+            // Each square is at [0,...,1] in the x and y axis.
+            // Thus, the game board for TicTacToe looks like this:
+            //
+            //  (0,1)  |  (0.5,1)  | (1,1)
+            // (0,0.5) | (0.5,0.5) | (1,0.5)
+            //  (0,0)  |  (0.5,0)  | (1,0)
+            //
+            for (int x = 0; x < xTotal; x++)
+                for (int y = 0; y < yTotal; y++)
+                    inputLayer.NodeList.Add(new SubstrateNode(uid++, new double[] { x, y }));
+
+            for (int x = 0; x < xTotal; x++)
+                for (int y = 0; y < yTotal; y++)
+                    outputLayer.NodeList.Add(new SubstrateNode(uid++, new double[] { x, y }));
+
+            List<SubstrateNodeSet> nodeSetList = new List<SubstrateNodeSet>(2);
+            nodeSetList.Add(inputLayer);
+            nodeSetList.Add(outputLayer);
+
+            // Define a connection mapping from the input layer to the output layer.
+            List<NodeSetMapping> nodeSetMappingList = new List<NodeSetMapping>(1);
+            nodeSetMappingList.Add(NodeSetMapping.Create(0, 1, (double?)null));
+
+            // Construct the substrate using a plain sigmoid as the phenome's
+            // activation function. All weights under 0.2 will not generate
+            // connections in the final phenome.
+            List<ActivationFunctionInfo> fnList = new List<ActivationFunctionInfo>(5);
+            fnList.Add(new ActivationFunctionInfo(0, 0.2, Linear.__DefaultInstance));
+            fnList.Add(new ActivationFunctionInfo(1, 0.2, BipolarSigmoid.__DefaultInstance));
+            fnList.Add(new ActivationFunctionInfo(2, 0.2, Gaussian.__DefaultInstance));
+            fnList.Add(new ActivationFunctionInfo(3, 0.2, Sine.__DefaultInstance));
+            fnList.Add(new ActivationFunctionInfo(4, 0.2, PlainSigmoid.__DefaultInstance));
+            var activationFnLib = new DefaultActivationFunctionLibrary(fnList);
+            Substrate substrate = new Substrate(nodeSetList,
+                activationFnLib,
+                4, 0.2, 5, nodeSetMappingList);
+
+            // Create genome decoder. Decodes to a neural network packaged with
+            // an activation scheme that defines a fixed number of activations per evaluation.
+            IGenomeDecoder<NeatGenome, IBlackBox> genomeDecoder =
+                new HyperNeatDecoder(substrate, 
+                                     NetworkActivationScheme.CreateCyclicFixedTimestepsScheme(4),
+                                     NetworkActivationScheme.CreateCyclicFixedTimestepsScheme(4),
+                                     false);
+
+            return genomeDecoder;
         }
     }
 }
