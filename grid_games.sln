@@ -51,7 +51,7 @@ Global
 		{DD2E9E25-CBAE-4343-B2EB-456BCE6D14EF}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = AsciiGames\AsciiGames.csproj
+		StartupItem = AgentBenchmark\AgentBenchmark.csproj
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
