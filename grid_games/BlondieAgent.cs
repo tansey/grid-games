@@ -22,12 +22,13 @@ namespace grid_games
             MinimaxAgent.CheckGameOver check,
             MinimaxAgent.GetValidNextMoves valid,
             IBlackBox brain,
+            MinimaxAgent.ApplyMove apply,
             GridGameParameters parameters)
             : base(id)
         {
             Brain = brain;
             _params = parameters;
-            _minimax = new MinimaxAgent(id, check, valid, Evaluate, parameters);
+            _minimax = new MinimaxAgent(id, check, valid, Evaluate, apply, parameters);
         }
 
         public override Move GetMove(int[,] board, bool[,] validNextMoves)

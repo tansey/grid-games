@@ -15,10 +15,12 @@ namespace grid_games
         public delegate bool CheckGameOver(int[,] Board, out int winner);
         public delegate void GetValidNextMoves(int[,] board, bool[,] validNextMoves, int player);
         public delegate double BoardEval(int[,] board, GridGameParameters ggp, int player);
+        public delegate void ApplyMove(int player, Move m, int[,] board);
 
         CheckGameOver _checkGameOver;
         GetValidNextMoves _validNextMoves;
         BoardEval _boardEval;
+        ApplyMove _applyMove;
 
         GridGameParameters _params;
 
@@ -26,6 +28,7 @@ namespace grid_games
             CheckGameOver check, 
             GetValidNextMoves valid,
             BoardEval eval,
+            ApplyMove apply,
             GridGameParameters parameters) : base(id)
         {
             Debug.Assert(parameters != null);
@@ -33,18 +36,15 @@ namespace grid_games
             _checkGameOver = check;
             _validNextMoves = valid;
             _boardEval = eval;
+            _applyMove = apply;
 
             _params = parameters;
         }
 
-        TextWriter writer;
         public override Move GetMove(int[,] board, bool[,] validNextMoves)
         {
-            using (writer = new StreamWriter("boards.txt"))
-            {
-                ScoredMove move = MiniMax(board, validNextMoves, _params.MinimaxDepth, PlayerId, "");
-                return move.Move;
-            }
+            ScoredMove move = MiniMax(board, validNextMoves, _params.MinimaxDepth, PlayerId, "");
+            return move.Move;
         }
 
 		public ScoredMove MiniMax(int[,] board, bool[,] validNextMoves, int depth, int player, string padding){
@@ -92,6 +92,7 @@ namespace grid_games
 
 			ScoredMove nextMove = null;
             bool[,] oppValidMoves = new bool[validNextMoves.GetLength(0), validNextMoves.GetLength(1)];
+            int[,] oppBoard = new int[board.GetLength(0), board.GetLength(1)];
 			for (int i = 0; i < board.GetLength(0); i++){
 				for (int j = 0; j < board.GetLength(1); j++) {
                     
@@ -100,17 +101,19 @@ namespace grid_games
                         continue;
 
                     // Try moving here
-                    int prev = board[i, j];
-                    board[i, j] = player;
+                    //int prev = board[i, j];
+                    //board[i, j] = player;
+                    Array.Copy(board, oppBoard, board.Length);
+                    _applyMove(player, new Move(i, j), oppBoard);
                     
                     // Update the valid moves for the next player
-                    _validNextMoves(board, oppValidMoves, player * -1);
+                    _validNextMoves(oppBoard, oppValidMoves, player * -1);
 
                     // Recurse
-					ScoredMove move = MiniMax(board, oppValidMoves, depth-1, player * -1, padding + " + ");
+                    ScoredMove move = MiniMax(oppBoard, oppValidMoves, depth - 1, player * -1, padding + " + ");
 
                     // Undo the move
-                    board[i, j] = prev;
+                    //board[i, j] = prev;
 
                     // If we found a win, return this move.
 					if (player == PlayerId){

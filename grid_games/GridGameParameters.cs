@@ -39,6 +39,8 @@ namespace grid_games
         public string OpponentPath { get; set; }
         public bool BlondieAgents { get; set; }
         public int MatchesPerOpponent { get; set; }
+        public int MonteCarloTrials { get; set; }
+        public int MinMcTrialsPerMove { get; set; }
 
         /// <summary>
         /// Returns a function that creates a new grid game.
@@ -81,6 +83,7 @@ namespace grid_games
                     TicTacToeGame.CheckGameOver, 
                     TicTacToeGame.GetValidNextMoves, 
                     TicTacToeGame.EvaluateBoard,
+                    TicTacToeGame.ApplyMove,
                     this);
 
                 case "connect four":
@@ -91,7 +94,8 @@ namespace grid_games
                 case "connectfour": return new MinimaxAgent(id, 
                     ConnectFourGame.CheckGameOver, 
                     ConnectFourGame.GetValidNextMoves, 
-                    ConnectFourGame.EvaluateBoard, 
+                    ConnectFourGame.EvaluateBoard,
+                    ConnectFourGame.ApplyMove,
                     this);
 
                 case "reversi":
@@ -99,6 +103,41 @@ namespace grid_games
                     ReversiGame.CheckGameOver, 
                     ReversiGame.GetValidNextMoves, 
                     ReversiGame.EvaluateBoard, 
+                    ReversiGame.FlipPieces,
+                    this);
+                default:
+                    throw new Exception("Unknown game: " + Game);
+            }
+        }
+
+        public MctsAgent CreateMctsAgent(int id)
+        {
+            switch (Game.ToLower())
+            {
+                case "tic-tac-toe":
+                case "tictactoe":
+                case "tic tac toe": return new MctsAgent(id,
+                    TicTacToeGame.CheckGameOver,
+                    TicTacToeGame.GetValidNextMoves,
+                    TicTacToeGame.ApplyMove,
+                    this);
+
+                case "connect four":
+                case "connect4":
+                case "connect 4":
+                case "connect-four":
+                case "connect-4":
+                case "connectfour": return new MctsAgent(id,
+                    ConnectFourGame.CheckGameOver,
+                    ConnectFourGame.GetValidNextMoves,
+                    ConnectFourGame.ApplyMove,
+                    this);
+
+                case "reversi":
+                case "othello": return new MctsAgent(id,
+                    ReversiGame.CheckGameOver,
+                    ReversiGame.GetValidNextMoves,
+                    ReversiGame.FlipPieces,
                     this);
                 default:
                     throw new Exception("Unknown game: " + Game);
@@ -115,6 +154,7 @@ namespace grid_games
                     TicTacToeGame.CheckGameOver,
                     TicTacToeGame.GetValidNextMoves,
                     boardEval,
+                    TicTacToeGame.ApplyMove,
                     this);
 
                 case "connect four":
@@ -126,13 +166,15 @@ namespace grid_games
                     ConnectFourGame.CheckGameOver, 
                     ConnectFourGame.GetValidNextMoves, 
                     boardEval, 
+                    ConnectFourGame.ApplyMove,
                     this);
 
                 case "reversi":
                 case "othello": return new BlondieAgent(id, 
                     ReversiGame.CheckGameOver, 
                     ReversiGame.GetValidNextMoves, 
-                    boardEval, 
+                    boardEval,
+                    ReversiGame.FlipPieces,
                     this);
                 default:
                     throw new Exception("Unknown game: " + Game);
@@ -359,6 +401,25 @@ namespace grid_games
                         gg.MatchesPerOpponent = matches;
                         break;
 
+                    case "mctrials":
+                        int trials;
+                        if (!int.TryParse(args[++i], out trials))
+                        {
+                            Console.WriteLine("Invalid trials per move: '{0}'.", args[i]);
+                            return null;
+                        }
+                        gg.MonteCarloTrials = trials;
+                        break;
+
+                    case "mintrials":
+                        int mintrials;
+                        if (!int.TryParse(args[++i], out mintrials))
+                        {
+                            Console.WriteLine("Invalid minimum trials per possible move: '{0}'.", args[i]);
+                            return null;
+                        }
+                        gg.MinMcTrialsPerMove = mintrials;
+                        break;
                     default:
                         Console.WriteLine("Invalid option: '{0}'. Option unknown. Use -help to see options.", args[i].Substring(1));
                         return null;
@@ -394,7 +455,9 @@ namespace grid_games
                 BlondieAgents = false,
                 MinimaxDepth = 9,
                 OpponentPath = null,
-                MatchesPerOpponent = 1
+                MatchesPerOpponent = 1,
+                MonteCarloTrials = 1000,
+                MinMcTrialsPerMove = 1
             };
 
             gg.ResultsPath = gg.ExperimentPath + gg.Name + "_results.csv";
@@ -429,6 +492,8 @@ namespace grid_games
             Console.WriteLine("-blondie".PadRight(25) + "Use Blondie24-style agents composed of a neural network board evaluator with minimax. Default: false");
             Console.WriteLine("-opponent -opp".PadRight(25) + "Location of the opponent to use when evaluating.");
             Console.WriteLine("-matches".PadRight(25) + "Number of matches to play against each opponent when evaluating agents. Default: 1");
+            Console.WriteLine("-mctrials".PadRight(25) + "Number of monte carlo trials per move for a MCTS agent. Default: 1000");
+            Console.WriteLine("-mintrials".PadRight(25) + "Minimum number of monte carlo trials per possible move for a MCTS agent. Default: 1");
         }
     }
 }

@@ -21,12 +21,14 @@ namespace grid_games.Reversi
 
         void flipPiecesAndCheckGameOver(GridGame game, int movingPlayer, int curPlayer, Move m)
         {
-            flipPieces(game, movingPlayer, m, Board);
+            FlipPieces(movingPlayer, m, Board);
             checkGameOver(game, movingPlayer, m);
         }
 
-        static void flipPieces(GridGame game, int player, Move m, int[,] board)
+        public static void FlipPieces(int player, Move m, int[,] board)
         {
+            board[m.Row, m.Column] = player;
+            
             // Explore every possible direction for potential flips
 			for (int xDir = -1; xDir < 2; xDir++)
 				for (int yDir = -1; yDir < 2; yDir++)
@@ -75,7 +77,7 @@ namespace grid_games.Reversi
 		}
 		
 		static bool ValidDirection(int i, int j, int k, int l, int player, int[,] board){
-			if (j == 0 && k == 0)
+			if (k == 0 && l == 0)
 				return false;
 													
 			// first we look for opponents pieces

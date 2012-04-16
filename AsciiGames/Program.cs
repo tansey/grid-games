@@ -36,7 +36,8 @@ namespace AsciiGames
                 Console.WriteLine("h = Human");
                 Console.WriteLine("m = Minimax");
                 Console.WriteLine("r = Random");
-                string agentType = getOption("Opponent type? ", "h", "m", "r");
+                Console.WriteLine("t = Monte Carlo Tree Search");
+                string agentType = getOption("Opponent type? ", "h", "m", "r", "t");
 
                 IAgent opp;
                 switch (agentType)
@@ -50,6 +51,14 @@ namespace AsciiGames
                         ggp.MinimaxDepth = depth;
                         opp = ggp.CreateMinimaxAgent(1); break;
                     case "r": opp = new RandomAgent(1); break;
+                    case "t": 
+                        int trials;
+                        string trialStr = getOption("Max trials per move? ");
+                        while (!int.TryParse(trialStr, out trials))
+                            trialStr = getOption("Invalid depth value. Try again: ");
+                        ggp.MonteCarloTrials = trials;
+                        opp = ggp.CreateMctsAgent(1);
+                        break;
                     default:
                         throw new Exception("Unknown agent type");
                 }

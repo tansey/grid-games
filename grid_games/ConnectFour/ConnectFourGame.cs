@@ -164,6 +164,11 @@ namespace grid_games.ConnectFour
             return (max_in_a_row + 5) / 4.0;
         }
 
+        public static void ApplyMove(int player, Move m, int[,] board)
+        {
+            board[m.Row, m.Column] = player;
+        }
+
         public override void Reset()
         {
             base.Reset();

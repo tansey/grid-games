@@ -129,6 +129,11 @@ namespace grid_games.TicTacToe
                     validNextMoves[i, j] = board[i, j] == 0;
         }
 
+        public static void ApplyMove(int player, Move m, int[,] board)
+        {
+            board[m.Row, m.Column] = player;
+        }
+
         public static double EvaluateBoard(int[,] board, GridGameParameters ggp, int player)
         {
             // It's tic-tac-toe. Go to the end of the game tree and stop being lazy.
