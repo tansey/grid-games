@@ -6,6 +6,9 @@ using System.Diagnostics;
 
 namespace grid_games
 {
+    /// <summary>
+    /// A Monte Carlo Tree Search (MCTS) agent that implements the UCB1 algorithm.
+    /// </summary>
     public class MctsAgent : Agent
     {
         public delegate bool CheckGameOver(int[,] Board, out int winner);
