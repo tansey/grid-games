@@ -21,11 +21,21 @@ namespace grid_games
         protected Random _random;
         protected GridGameParameters _params;
 
+        readonly int mcTrials;
+        readonly int minTrialsPerMove;
+        readonly double uctConst;
+
+        /// <summary>
+        /// Whether this agent is being used as a benchmark agent.
+        /// </summary>
+        public bool BenchmarkAgent { get; set; }
+
         public MctsAgent(int id, 
             CheckGameOver check, 
             GetValidNextMoves valid,
             ApplyMove applyMove,
-            GridGameParameters parameters) : base(id)
+            GridGameParameters parameters,
+            bool benchmarkAgent = false) : base(id)
         {
             Debug.Assert(parameters != null);
 
@@ -35,6 +45,12 @@ namespace grid_games
 
             _params = parameters;
             _random = new Random();
+            
+            BenchmarkAgent = benchmarkAgent;
+
+            mcTrials = benchmarkAgent ? _params.EvaluatorMonteCarloTrials : _params.MonteCarloTrials;
+            minTrialsPerMove = benchmarkAgent ? _params.EvaluatorMinMcTrialsPerMove : _params.MinMcTrialsPerMove;
+            uctConst = benchmarkAgent ? _params.EvaluatorUctConst : _params.UctConst;
         }
 
         public override Move GetMove(int[,] board, bool[,] validNextMoves)
@@ -47,13 +63,13 @@ namespace grid_games
                         candidates.Add(new MctsMove(new Move(i, j)));
 
             int[,] tempBoard = new int[board.GetLength(0), board.GetLength(1)];
-            for (int trial = 0; trial < _params.MonteCarloTrials; trial++)
+            for (int trial = 0; trial < mcTrials; trial++)
             {
                 // select a node
                 MctsMove candidate = null;
                 
                 // try each move at least once
-                if (trial < candidates.Count * _params.MinMcTrialsPerMove)
+                if (trial < candidates.Count * minTrialsPerMove)
                     candidate = candidates[trial % candidates.Count];
                 else
                     candidate = selectBestCandidate(candidates);
@@ -74,13 +90,13 @@ namespace grid_games
             //        c.Move.Row, c.Move.Column, c.Score(0, _params.MonteCarloTrials),
             //        c.Trials);
 
-            return candidates.ArgMax(m => m.Score(0, _params.MonteCarloTrials)).Move;
+            return candidates.ArgMax(m => m.Score(0, mcTrials)).Move;
         }
 
         private MctsMove selectBestCandidate(List<MctsMove> candidates)
         {
             int totalTrials = candidates.Sum(m => m.Trials);
-            return candidates.ArgMax(m => m.Score(_params.UctConst, totalTrials));
+            return candidates.ArgMax(m => m.Score(uctConst, totalTrials));
         }
         
         protected virtual int playRandomGame(int[,] board, int player)

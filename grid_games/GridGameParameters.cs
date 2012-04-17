@@ -45,6 +45,10 @@ namespace grid_games
         public bool HyperNeat { get; set; }
         public bool MctsNeat { get; set; }
         public int RoundRobinOpponents { get; set; }
+        public int EvaluatorMonteCarloTrials { get; set; }
+        public int EvaluatorMinMcTrialsPerMove { get; set; }
+        public double EvaluatorUctConst { get; set; }
+        
 
         /// <summary>
         /// Returns a function that creates a new grid game.
@@ -114,7 +118,7 @@ namespace grid_games
             }
         }
 
-        public MctsAgent CreateMctsAgent(int id)
+        public MctsAgent CreateMctsAgent(int id, bool benchmarkAgent)
         {
             switch (Game.ToLower())
             {
@@ -124,7 +128,7 @@ namespace grid_games
                     TicTacToeGame.CheckGameOver,
                     TicTacToeGame.GetValidNextMoves,
                     TicTacToeGame.ApplyMove,
-                    this);
+                    this, benchmarkAgent);
 
                 case "connect four":
                 case "connect4":
@@ -135,14 +139,14 @@ namespace grid_games
                     ConnectFourGame.CheckGameOver,
                     ConnectFourGame.GetValidNextMoves,
                     ConnectFourGame.ApplyMove,
-                    this);
+                    this, benchmarkAgent);
 
                 case "reversi":
                 case "othello": return new MctsAgent(id,
                     ReversiGame.CheckGameOver,
                     ReversiGame.GetValidNextMoves,
                     ReversiGame.FlipPieces,
-                    this);
+                    this, benchmarkAgent);
                 default:
                     throw new Exception("Unknown game: " + Game);
             }
@@ -473,6 +477,35 @@ namespace grid_games
                         }
                         gg.UctConst = uctConst;
                         break;
+                    case "eval_mctrials":
+                        int eval_trials;
+                        if (!int.TryParse(args[++i], out eval_trials))
+                        {
+                            Console.WriteLine("Invalid evaluator trials per move: '{0}'.", args[i]);
+                            return null;
+                        }
+                        gg.EvaluatorMonteCarloTrials = eval_trials;
+                        break;
+
+                    case "eval_mintrials":
+                        int eval_mintrials;
+                        if (!int.TryParse(args[++i], out eval_mintrials))
+                        {
+                            Console.WriteLine("Invalid evaluator minimum trials per possible move: '{0}'.", args[i]);
+                            return null;
+                        }
+                        gg.EvaluatorMinMcTrialsPerMove = eval_mintrials;
+                        break;
+
+                    case "eval_uctconst":
+                        double eval_uctConst;
+                        if (!double.TryParse(args[++i], out eval_uctConst))
+                        {
+                            Console.WriteLine("Invalid evaluator UCT const: '{0}'.", args[i]);
+                            return null;
+                        }
+                        gg.EvaluatorUctConst = eval_uctConst;
+                        break;
                     case "hyperneat":
                         gg.HyperNeat = true;
                         break;
@@ -569,6 +602,10 @@ namespace grid_games
             Console.WriteLine("-hyperneat".PadRight(25) + "Use HyperNEAT for the agents. Default: false");
             Console.WriteLine("-mctsneat".PadRight(25) + "Use MCTS with a NEAT-based default policy. Default: false");
             Console.WriteLine("-oppcount".PadRight(25) + "Number of opponents to play against in round robin mode, selected randomly without replacement from the population. Default: 100");
+            Console.WriteLine("-eval_mctrials".PadRight(25) + "Number of monte carlo trials per move for a MCTS benchmark agent. Default: 1000");
+            Console.WriteLine("-eval_mintrials".PadRight(25) + "Minimum number of monte carlo trials per possible move for a MCTS benchmark agent. Default: 1");
+            Console.WriteLine("-eval_uctconst".PadRight(25) + "Constant multiplier for the UCT update equation for a benchmark agent. Default: 0.5");
+            
         }
     }
 }

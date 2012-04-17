@@ -57,7 +57,7 @@ namespace AsciiGames
                         while (!int.TryParse(trialStr, out trials))
                             trialStr = getOption("Invalid depth value. Try again: ");
                         ggp.MonteCarloTrials = trials;
-                        opp = ggp.CreateMctsAgent(1);
+                        opp = ggp.CreateMctsAgent(1, false);
                         break;
                     default:
                         throw new Exception("Unknown agent type");
