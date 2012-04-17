@@ -15,11 +15,11 @@ namespace grid_games
         public delegate void GetValidNextMoves(int[,] board, bool[,] validNextMoves, int player);
         public delegate void ApplyMove(int player, Move m, int[,] board);
 
-        CheckGameOver _checkGameOver;
-        GetValidNextMoves _validNextMoves;
-        ApplyMove _applyMove;
-        Random _random;
-        GridGameParameters _params;
+        protected CheckGameOver _checkGameOver;
+        protected GetValidNextMoves _validNextMoves;
+        protected ApplyMove _applyMove;
+        protected Random _random;
+        protected GridGameParameters _params;
 
         public MctsAgent(int id, 
             CheckGameOver check, 
@@ -69,10 +69,10 @@ namespace grid_games
                 candidate.Points += winner == PlayerId ? 1 : winner == 0 ? 0 : -1;
             }
 
-            foreach (var c in candidates)
-                Console.WriteLine("Move: ({0},{1}) Score: {2} Trials: {3}",
-                    c.Move.Row, c.Move.Column, c.Score(0, _params.MonteCarloTrials),
-                    c.Trials);
+            //foreach (var c in candidates)
+            //    Console.WriteLine("Move: ({0},{1}) Score: {2} Trials: {3}",
+            //        c.Move.Row, c.Move.Column, c.Score(0, _params.MonteCarloTrials),
+            //        c.Trials);
 
             return candidates.ArgMax(m => m.Score(0, _params.MonteCarloTrials)).Move;
         }
@@ -83,7 +83,7 @@ namespace grid_games
             return candidates.ArgMax(m => m.Score(_params.UctConst, totalTrials));
         }
         
-        private int playRandomGame(int[,] board, int player)
+        protected virtual int playRandomGame(int[,] board, int player)
         {
             bool[,] validNextMoves = new bool[board.GetLength(0), board.GetLength(1)];
             int winner;

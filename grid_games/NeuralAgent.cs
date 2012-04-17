@@ -22,15 +22,10 @@ namespace grid_games
             Brain.ResetState();
 
             // Set the board state as the inputs
-			//Console.WriteLine("Height: {0}, Width: {1}, Brain: {2}", 
-			//                  board.GetLength(0), board.GetLength(1), Brain.InputSignalArray.Length);
-            
 			for (int i = 0; i < board.GetLength(0); i++)
                 for (int j = 0; j < board.GetLength(1); j++)
-			{
-				
                     Brain.InputSignalArray[i * board.GetLength(1) + j] = board[i, j].toBoardSensor(PlayerId);
-			}
+            
             // Activate the network
             Brain.Activate();
 

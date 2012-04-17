@@ -68,16 +68,26 @@ namespace grid_games
             //  - Do we play multiple round-robins?
             //  - Do we step everyone forward 1 move at a time?
             //  - Do we randomize the step order?
+
+            IAgent[] villains = new IAgent[_params.RoundRobinOpponents];
+            List<IAgent> tempAgents = _agents.ToList();
+            for (int i = 0; i < villains.Length; i++)
+            {
+                int chosenIdx = _random.Next(tempAgents.Count);
+                villains[i] = tempAgents[chosenIdx];
+                tempAgents.RemoveAt(chosenIdx);
+            }
+
             // Play a round-robin game
             double[] scores = new double[_agents.Length];
             for (int heroIdx = 0; heroIdx < _agents.Length; heroIdx++)
-                for (int villainIdx = 0; villainIdx < _agents.Length; villainIdx++)
+                for (int villainIdx = 0; villainIdx < villains.Length; villainIdx++)
                 {
                     Console.WriteLine("{0} vs. {1}", heroIdx, villainIdx);
                     if (heroIdx == villainIdx)
                         continue;
 
-                    int winner = evaluate(_agents[heroIdx], _agents[villainIdx]);
+                    int winner = evaluate(_agents[heroIdx], villains[villainIdx]);
 
                     updateScores(scores, heroIdx, villainIdx, winner);
                 }
@@ -153,10 +163,12 @@ namespace grid_games
                     Console.WriteLine("Couldn't decode genome {0}!", i);
                     _agents[i] = new RandomAgent(i);
                 }
-                else if(_params.SocialAgents)
+                else if (_params.SocialAgents)
                     _agents[i] = new SocialAgent(i, phenome, CurrentMemorySize);
-                else if(_params.BlondieAgents)
+                else if (_params.BlondieAgents)
                     _agents[i] = _params.CreateBlondieAgent(i, phenome);
+                else if (_params.MctsNeat)
+                    _agents[i] = _params.CreateMctsNeatAgent(i, phenome);
                 else
                     _agents[i] = new NeuralAgent(i, phenome);
             }

@@ -73,7 +73,7 @@ namespace AgentBenchmark
             // TODO: Should we save funcIds here? 
             //       I think we need to if it's HyperNEAT, but not if it's regular NEAT.
             var doc = NeatGenomeXmlIO.SaveComplete(new List<NeatGenome>() { ea.CurrentChampGenome }, true);
-            doc.Save(experiment.Parameters.ChampionPath);
+            doc.Save(string.Format(experiment.Parameters.ChampionPath, generation));
 
             // Stop if we've evolved for enough generations
             if (ea.CurrentGeneration >= experiment.Parameters.Generations)

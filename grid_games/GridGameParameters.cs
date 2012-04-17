@@ -43,6 +43,8 @@ namespace grid_games
         public int MinMcTrialsPerMove { get; set; }
         public double UctConst { get; set; }
         public bool HyperNeat { get; set; }
+        public bool MctsNeat { get; set; }
+        public int RoundRobinOpponents { get; set; }
 
         /// <summary>
         /// Returns a function that creates a new grid game.
@@ -175,6 +177,43 @@ namespace grid_games
                 case "othello": return new BlondieAgent(id, 
                     ReversiGame.CheckGameOver, 
                     ReversiGame.GetValidNextMoves, 
+                    boardEval,
+                    ReversiGame.FlipPieces,
+                    this);
+                default:
+                    throw new Exception("Unknown game: " + Game);
+            }
+        }
+
+        public MctsNeatAgent CreateMctsNeatAgent(int id, IBlackBox boardEval)
+        {
+            switch (Game.ToLower())
+            {
+                case "tic-tac-toe":
+                case "tictactoe":
+                case "tic tac toe": return new MctsNeatAgent(id,
+                    TicTacToeGame.CheckGameOver,
+                    TicTacToeGame.GetValidNextMoves,
+                    boardEval,
+                    TicTacToeGame.ApplyMove,
+                    this);
+
+                case "connect four":
+                case "connect4":
+                case "connect 4":
+                case "connect-four":
+                case "connect-4":
+                case "connectfour": return new MctsNeatAgent(id,
+                    ConnectFourGame.CheckGameOver,
+                    ConnectFourGame.GetValidNextMoves,
+                    boardEval,
+                    ConnectFourGame.ApplyMove,
+                    this);
+
+                case "reversi":
+                case "othello": return new MctsNeatAgent(id,
+                    ReversiGame.CheckGameOver,
+                    ReversiGame.GetValidNextMoves,
                     boardEval,
                     ReversiGame.FlipPieces,
                     this);
@@ -370,7 +409,7 @@ namespace grid_games
                         gg.ExperimentPath = dir;
                         gg.ResultsPath = gg.ExperimentPath + gg.Name + "_results.csv";
                         gg.ConfigPath = gg.ExperimentPath + gg.Name + "_config.xml";
-                        gg.ChampionPath = gg.ExperimentPath + gg.Name + "_champion.xml";
+                        gg.ChampionPath = gg.ExperimentPath + gg.Name + "_gen{0}_champion.xml";
 
                         break;
 
@@ -394,6 +433,8 @@ namespace grid_games
                         break;
 
                     case "matches":
+                    case "battles":
+                    case "bouts":
                         int matches;
                         if (!int.TryParse(args[++i], out matches))
                         {
@@ -435,6 +476,18 @@ namespace grid_games
                     case "hyperneat":
                         gg.HyperNeat = true;
                         break;
+                    case "mctsneat":
+                        gg.MctsNeat = true;
+                        break;
+                    case "oppcount":
+                        int oppcount;
+                        if(!int.TryParse(args[++i], out oppcount))
+                        {
+                            Console.WriteLine("Invalid opponent count: '{0}'.", args[i]);
+                            return null;
+                        }
+                        gg.RoundRobinOpponents = oppcount;
+                        break;
                     default:
                         Console.WriteLine("Invalid option: '{0}'. Option unknown. Use -help to see options.", args[i].Substring(1));
                         return null;
@@ -473,12 +526,14 @@ namespace grid_games
                 MonteCarloTrials = 1000,
                 MinMcTrialsPerMove = 1,
                 UctConst = 0.5,
-                HyperNeat = false
+                HyperNeat = false,
+                MctsNeat = false,
+                RoundRobinOpponents = 100
             };
 
             gg.ResultsPath = gg.ExperimentPath + gg.Name + "_results.csv";
             gg.ConfigPath = gg.ExperimentPath + gg.Name + "_config.xml";
-            gg.ChampionPath = gg.ExperimentPath + gg.Name + "_champion.xml";
+            gg.ChampionPath = gg.ExperimentPath + gg.Name + "_gen{0}_champion.xml";
             return gg;
         }
 
@@ -512,6 +567,8 @@ namespace grid_games
             Console.WriteLine("-mintrials".PadRight(25) + "Minimum number of monte carlo trials per possible move for a MCTS agent. Default: 1");
             Console.WriteLine("-uctconst".PadRight(25) + "Constant multiplier for the UCT update equation. Default: 0.5");
             Console.WriteLine("-hyperneat".PadRight(25) + "Use HyperNEAT for the agents. Default: false");
+            Console.WriteLine("-mctsneat".PadRight(25) + "Use MCTS with a NEAT-based default policy. Default: false");
+            Console.WriteLine("-oppcount".PadRight(25) + "Number of opponents to play against in round robin mode, selected randomly without replacement from the population. Default: 100");
         }
     }
 }

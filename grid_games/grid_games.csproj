@@ -55,6 +55,7 @@
     <Compile Include="GridGame.cs" />
     <Compile Include="ListExtensions.cs" />
     <Compile Include="MctsAgent.cs" />
+    <Compile Include="MctsNeatAgent.cs" />
     <Compile Include="RoundRobinEvaluator.cs" />
     <Compile Include="GridGameExperiment.cs" />
     <Compile Include="GridGameParameters.cs" />
