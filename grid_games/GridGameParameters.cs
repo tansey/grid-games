@@ -37,6 +37,8 @@ namespace grid_games
         public string ConfigPath { get; set; }
         public string ChampionPath { get; set; }
         public string OpponentPath { get; set; }
+        public string AgentPath { get; set; }
+        public string BenchmarkResultsPath { get; set; }
         public bool BlondieAgents { get; set; }
         public int MatchesPerOpponent { get; set; }
         public int MonteCarloTrials { get; set; }
@@ -414,7 +416,7 @@ namespace grid_games
                         gg.ResultsPath = gg.ExperimentPath + gg.Name + "_results.csv";
                         gg.ConfigPath = gg.ExperimentPath + gg.Name + "_config.xml";
                         gg.ChampionPath = gg.ExperimentPath + gg.Name + "_gen{0}_champion.xml";
-
+                        gg.BenchmarkResultsPath = gg.ExperimentPath + gg.Name + "_benchmark.csv";
                         break;
 
                     case "depth":
@@ -521,6 +523,9 @@ namespace grid_games
                         }
                         gg.RoundRobinOpponents = oppcount;
                         break;
+                    case "agentpath":
+                        gg.AgentPath = args[++i];
+                        break;
                     default:
                         Console.WriteLine("Invalid option: '{0}'. Option unknown. Use -help to see options.", args[i].Substring(1));
                         return null;
@@ -567,6 +572,7 @@ namespace grid_games
             gg.ResultsPath = gg.ExperimentPath + gg.Name + "_results.csv";
             gg.ConfigPath = gg.ExperimentPath + gg.Name + "_config.xml";
             gg.ChampionPath = gg.ExperimentPath + gg.Name + "_gen{0}_champion.xml";
+            gg.BenchmarkResultsPath = gg.ExperimentPath + gg.Name + "_benchmark.csv";
             return gg;
         }
 
@@ -605,6 +611,7 @@ namespace grid_games
             Console.WriteLine("-eval_mctrials".PadRight(25) + "Number of monte carlo trials per move for a MCTS benchmark agent. Default: 1000");
             Console.WriteLine("-eval_mintrials".PadRight(25) + "Minimum number of monte carlo trials per possible move for a MCTS benchmark agent. Default: 1");
             Console.WriteLine("-eval_uctconst".PadRight(25) + "Constant multiplier for the UCT update equation for a benchmark agent. Default: 0.5");
+            Console.WriteLine("-agentpath".PadRight(25) + "The file path of the desired agent to benchmark.");
             
         }
     }

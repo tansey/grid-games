@@ -71,6 +71,7 @@
     <Compile Include="StateActionReward.cs" />
     <Compile Include="TicTacToe\TicTacToeGame.cs" />
     <Compile Include="MinimaxAgent.cs" />
+    <Compile Include="Turn.cs" />
     <Compile Include="ValuedMove.cs" />
     <Compile Include="ScoredMove.cs" />
   </ItemGroup>

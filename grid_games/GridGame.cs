@@ -20,6 +20,7 @@ namespace grid_games
         public int Winner { get; protected set; }
         public IAgent Hero { get; set; }
         public IAgent Villain { get; set; }
+        public List<Turn> Turns { get; set; }
 
 
         public delegate void AgentMovedHandler(GridGame game, int movingPlayer, int currentPlayer, Move m);
@@ -58,7 +59,20 @@ namespace grid_games
                     continue;
                 }
 
+                // Create new stopwatch
+                Stopwatch stopwatch = new Stopwatch();
+
+                // Begin timing
+                stopwatch.Start();
+
+                // Get the player's move
                 Move m = player.GetMove(Board, ValidNextMoves);
+
+                // Stop timing
+                stopwatch.Stop();
+
+                // Write result
+                Turns.Add(new Turn(m, ActingPlayer, stopwatch.ElapsedMilliseconds));
 
                 Move(m.Row, m.Column);
 
@@ -80,6 +94,7 @@ namespace grid_games
         {
             Board = new int[_rows, _columns];
             ValidNextMoves = new bool[_rows, _columns];
+            Turns = new List<Turn>();
             ActingPlayer = _startingPlayer;
 
             Hero.Reset();
