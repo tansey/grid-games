@@ -40,15 +40,27 @@ namespace AgentBenchmark
             var modelGenome = _experiment.LoadPopulation(XmlReader.Create(_params.AgentPath))[0];
             var brain = _experiment.CreateGenomeDecoder().Decode(modelGenome);
             if (_params.MctsNeat)
+            {
+                Console.WriteLine("Creating MCTS-NEAT agent");
                 agent = _params.CreateMctsNeatAgent(1, brain);
+            }
             else
+            {
+                Console.WriteLine("Creating MCTS agent");
                 agent = _params.CreateMctsAgent(1, false);
+            }
 
             // Create the benchmark MCTS agent
             if (_params.Evaluator == "mcts")
+            {
+                Console.WriteLine("Creating MCTS benchmark agent");
                 benchmark = _params.CreateMctsAgent(-1, true);
+            }
             else
+            {
+                Console.WriteLine("Creating Random benchmark agent");
                 benchmark = new RandomAgent(-1);
+            }
 
             Outcome[] outcomes = new Outcome[_params.MatchesPerOpponent * 2];
 
