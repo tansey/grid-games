@@ -14,6 +14,7 @@ namespace AgentBenchmark
     {
         static GridGameParameters _params;
         static GridGameExperiment _experiment;
+        static TextWriter _moveLog;
 
         static void Main(string[] args)
         {
@@ -52,25 +53,29 @@ namespace AgentBenchmark
             Outcome[] outcomes = new Outcome[_params.MatchesPerOpponent * 2];
 
             Console.WriteLine("Starting games as player 1..");
-            for (int i = 0; i < _params.MatchesPerOpponent; i++)
+            using (_moveLog = new StreamWriter(_params.BenchmarkGameLogPath))
             {
-                Console.Write(i + "...");
-                if (i > 0 && i % 10 == 0)
-                    Console.WriteLine();
-                outcomes[i] = RunTrial(agent, benchmark, 1);
-            }
-            Console.WriteLine();
+                for (int i = 0; i < _params.MatchesPerOpponent; i++)
+                {
+                    Console.Write(i + "...");
+                    if (i > 0 && i % 10 == 0)
+                        Console.WriteLine();
+                    outcomes[i] = RunTrial(agent, benchmark, 1);
+                }
+                Console.WriteLine();
 
-            Console.WriteLine("Starting games as player 2..");
-            for (int i = 0; i < _params.MatchesPerOpponent; i++)
-            {
-                Console.Write(i + "...");
-                if (i > 0 && i % 10 == 0)
-                    Console.WriteLine();
-                outcomes[i + _params.MatchesPerOpponent] = RunTrial(benchmark, agent, -1);
+                Console.WriteLine("Starting games as player 2..");
+                for (int i = 0; i < _params.MatchesPerOpponent; i++)
+                {
+                    Console.Write(i + "...");
+                    if (i > 0 && i % 10 == 0)
+                        Console.WriteLine();
+                    outcomes[i + _params.MatchesPerOpponent] = RunTrial(benchmark, agent, -1);
+                }
+                Console.WriteLine();
+                Console.WriteLine("Saving log file...");
             }
-            Console.WriteLine();
-            Console.WriteLine("Saving log file...");
+
             using (TextWriter writer = new StreamWriter(_params.BenchmarkResultsPath))
             {
                 // games
@@ -81,6 +86,8 @@ namespace AgentBenchmark
                 // p2 wins, p2 ties, p2 losses, 
                 // p2 win %, p2 tie %, p2 loss %,
                 // time per move, turns per game
+                writer.WriteLine("games,wins,win%,ties,tie%,losses,loss%,p1 wins,p1 win%,p1 ties,p1 tie%,p1 losses,p1 loss%,p2 wins,p2 win%,p2 ties,p2 tie%,p2 losses,p2 loss%,avg time per move, avg total moves per game");
+
                 writer.WriteLine(
                     outcomes.Length + "," + // games
                     
@@ -118,12 +125,22 @@ namespace AgentBenchmark
 
             game.PlayToEnd();
 
+            LogGame(agentId, game.Turns);
+
             return new Outcome(game.Winner, agentId, (float)game.Turns.Where(t => t.Player == agentId).Average(t =>t.Time), game.Turns.Count);
         }
 
         static string Pct(double count, double total, int decimals = 2)
         {
             return string.Format("{0:N" + decimals + "}%", count / total * 100);
+        }
+
+        static void LogGame(int agentId, List<Turn> moves)
+        {
+            _moveLog.WriteLine("***** NEW GAME ******");
+            _moveLog.WriteLine("Agent is {0}", agentId == 1 ? "Hero" : "Villain");
+            foreach (var turn in moves)
+                _moveLog.WriteLine("{0} played ({1},{2}) after {3:N2}ms", turn.Player == 1 ? "Hero" : "Villain", turn.Move.Row, turn.Move.Column, turn.Time);
         }
     }
 }

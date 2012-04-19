@@ -39,6 +39,7 @@ namespace grid_games
         public string OpponentPath { get; set; }
         public string AgentPath { get; set; }
         public string BenchmarkResultsPath { get; set; }
+        public string BenchmarkGameLogPath { get; set; }
         public bool BlondieAgents { get; set; }
         public int MatchesPerOpponent { get; set; }
         public int MonteCarloTrials { get; set; }
@@ -417,6 +418,7 @@ namespace grid_games
                         gg.ConfigPath = gg.ExperimentPath + gg.Name + "_config.xml";
                         gg.ChampionPath = gg.ExperimentPath + gg.Name + "_gen{0}_champion.xml";
                         gg.BenchmarkResultsPath = gg.ExperimentPath + gg.Name + "_benchmark.csv";
+                        gg.BenchmarkGameLogPath = gg.ExperimentPath + gg.Name + "_games.txt";
                         break;
 
                     case "depth":
@@ -573,6 +575,7 @@ namespace grid_games
             gg.ConfigPath = gg.ExperimentPath + gg.Name + "_config.xml";
             gg.ChampionPath = gg.ExperimentPath + gg.Name + "_gen{0}_champion.xml";
             gg.BenchmarkResultsPath = gg.ExperimentPath + gg.Name + "_benchmark.csv";
+            gg.BenchmarkGameLogPath = gg.ExperimentPath + gg.Name + "_games.txt";
             return gg;
         }
 

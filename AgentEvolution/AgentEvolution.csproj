@@ -8,8 +8,8 @@
     <ProjectGuid>{DD2E9E25-CBAE-4343-B2EB-456BCE6D14EF}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AgentBenchmark</RootNamespace>
-    <AssemblyName>AgentBenchmark</AssemblyName>
+    <RootNamespace>AgentEvolution</RootNamespace>
+    <AssemblyName>AgentEvolution</AssemblyName>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">

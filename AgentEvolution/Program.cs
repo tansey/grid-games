@@ -9,7 +9,7 @@ using System.IO;
 using System.Threading;
 using System.Xml.Serialization;
 
-namespace AgentBenchmark
+namespace AgentEvolution
 {
     class Program
     {
