@@ -40,9 +40,14 @@ namespace AgentBenchmark
             var brain = _experiment.CreateGenomeDecoder().Decode(modelGenome);
             if (_params.MctsNeat)
                 agent = _params.CreateMctsNeatAgent(1, brain);
+            else
+                agent = _params.CreateMctsAgent(1, false);
 
             // Create the benchmark MCTS agent
-            benchmark = _params.CreateMctsAgent(-1, true);
+            if (_params.Evaluator == "mcts")
+                benchmark = _params.CreateMctsAgent(-1, true);
+            else
+                benchmark = new RandomAgent(-1);
 
             Outcome[] outcomes = new Outcome[_params.MatchesPerOpponent * 2];
 
@@ -50,20 +55,22 @@ namespace AgentBenchmark
             for (int i = 0; i < _params.MatchesPerOpponent; i++)
             {
                 Console.Write(i + "...");
-                if ((i - 1) % 10 == 0)
+                if (i > 0 && i % 10 == 0)
                     Console.WriteLine();
                 outcomes[i] = RunTrial(agent, benchmark, 1);
             }
+            Console.WriteLine();
 
             Console.WriteLine("Starting games as player 2..");
             for (int i = 0; i < _params.MatchesPerOpponent; i++)
             {
                 Console.Write(i + "...");
-                if ((i - 1) % 10 == 0)
+                if (i > 0 && i % 10 == 0)
                     Console.WriteLine();
                 outcomes[i + _params.MatchesPerOpponent] = RunTrial(benchmark, agent, -1);
             }
-
+            Console.WriteLine();
+            Console.WriteLine("Saving log file...");
             using (TextWriter writer = new StreamWriter(_params.BenchmarkResultsPath))
             {
                 // games
@@ -102,6 +109,7 @@ namespace AgentBenchmark
                     string.Format("{0:N2}", outcomes.Average(o => o.TotalMoves))
                     );
             }
+            Console.WriteLine("Done!");
         }
 
         static Outcome RunTrial(IAgent hero, IAgent villain, int agentId)
