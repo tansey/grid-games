@@ -26,7 +26,8 @@ namespace grid_games
         public GridGameParameters Parameters { get; set; }
         public NeatGenomeParameters NeatParameters { get; set; }
         public NeatEvolutionAlgorithmParameters EvoParameters { get; set; }
-        public RoundRobinEvaluator<NeatGenome> Evaluator { get; set; }
+        public IGenomeListEvaluator<NeatGenome> Evaluator { get; set; }
+        public bool Condor { get; set; }
 
         public GridGameExperiment(string paramsFilename)
         {
@@ -130,7 +131,8 @@ namespace grid_games
             NeatEvolutionAlgorithm<NeatGenome> ea = new NeatEvolutionAlgorithm<NeatGenome>(EvoParameters, speciationStrategy, complexityRegulationStrategy);
 
             // Create a genome list evaluator. This packages up the genome decoder with the phenome evaluator.
-            Evaluator = CreateEvaluator();
+            if(Evaluator == null)
+                Evaluator = CreateEvaluator();
 
             // Initialize the evolution algorithm.
             ea.Initialize(Evaluator, genomeFactory, genomeList);
@@ -163,6 +165,38 @@ namespace grid_games
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Creates the target agent for evaluating.
+        /// </summary>
+        /// <returns></returns>
+        public IAgent CreateTargetAgent()
+        {
+            // Load the agent to benchmark
+            var modelGenome = LoadPopulation(XmlReader.Create(Parameters.AgentPath))[0];
+            var brain = CreateGenomeDecoder().Decode(modelGenome);
+            if (Parameters.MctsNeat)
+            {
+                Console.WriteLine("Creating MCTS-NEAT agent");
+                return Parameters.CreateMctsNeatAgent(1, brain);
+            }
+
+            Console.WriteLine("Found no target agent specifications. Returning random agent...");
+            return new RandomAgent(1);
+        }
+
+        public IAgent CreateEvalAgent()
+        {
+            // Create the benchmark MCTS agent
+            if (Parameters.Evaluator == "mcts")
+            {
+                Console.WriteLine("Creating MCTS benchmark agent");
+                return Parameters.CreateMctsAgent(-1, true);
+            }
+
+            Console.WriteLine("Creating Random benchmark agent");
+            return new RandomAgent(-1);
         }
 
         /// <summary>
